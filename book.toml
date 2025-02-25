@@ -1,0 +1,6 @@
+[book]
+authors = ["pinkforest"]
+language = "en"
+multilingual = false
+src = "src"
+title = "yaws"
