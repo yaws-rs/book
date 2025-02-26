@@ -8,7 +8,7 @@
   - [Slabbable](./bearer/slabbable.md)
 - [OpCode](./opcode.md)
   - [Accept](./opcode/accept.md)
-  - [EpollCtl](./ocode/epoll_ctl.md)
+  - [EpollCtl](./opcode/epoll_ctl.md)
   - [FutexWait](./opcode/futex_wait.md)
   - [ProvideBuffers](./opcode/provide_buffers.md)  
   - [Recv](./ocode/recv.md)
