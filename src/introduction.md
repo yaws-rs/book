@@ -2,7 +2,7 @@
 
 yaws io_uring abstracts the underlying low level Linux io_uring library.
 
-We aim too provide safer semantics towards managing all the moving parts given these have complex lifetimes and ownership, typically shared between the kernel, userspace and the user.
+We aim to provide safer semantics towards managing all the moving parts given these have complex lifetimes and ownership, typically shared between the kernel, userspace and the user.
 
 ![high-level](images/high_level.jpg)
 
