@@ -1,8 +1,12 @@
 # Accept
 
-Single-shot Accept provides the source socket address and port within the completion.
+Accept abstracts the underlying [io_uring::opcode::Accept](https://docs.rs/io-uring/latest/io_uring/opcode/struct.Accept.html).
 
-If you either don't need the source address and / or port, consider using AcceptMulti instead.
+This Single-shot Accept provides the source socket address and port within the completion.
+
+If you either don't need the source address and / or port, consider using the AcceptMulti instead.
+
+**Note**: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.
 
 ## Submission
 

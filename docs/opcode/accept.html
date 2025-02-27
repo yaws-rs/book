@@ -153,8 +153,10 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="accept"><a class="header" href="#accept">Accept</a></h1>
-<p>Single-shot Accept provides the source socket address and port within the completion.</p>
-<p>If you either don't need the source address and / or port, consider using AcceptMulti instead.</p>
+<p>Accept abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.Accept.html">io_uring::opcode::Accept</a>.</p>
+<p>This Single-shot Accept provides the source socket address and port within the completion.</p>
+<p>If you either don't need the source address and / or port, consider using the AcceptMulti instead.</p>
+<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
 <h2 id="submission"><a class="header" href="#submission">Submission</a></h2>
 <p>You can currently push single-shot Accept unsafely depending on whether the underlying TcpListener RawFd is IPv4 or IPv6:</p>
 <ul>

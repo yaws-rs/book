@@ -153,6 +153,20 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="sendzc"><a class="header" href="#sendzc">SendZc</a></h1>
+<p>SendZc abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.SendZc.html">io_uring::opcode::SendZc</a>.</p>
+<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
+<h2 id="construct"><a class="header" href="#construct">Construct</a></h2>
+<p>Currently SendZc requires the associated indexing (through submission) into:</p>
+<ul>
+<li>registered filehandle (see <a href="../filehandles.html">Filehandles</a></li>
+<li>registered buffer (see <a href="../buffers.html">Buffers</a></li>
+<li>kernel buffer id (see <a href="../buffers.html">Buffers</a></li>
+</ul>
+<h2 id="submission"><a class="header" href="#submission">Submission</a></h2>
+<p>Currently submit using <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_send_singlebuf">UringBearer::add_send_singlebuf</a>.</p>
+<h2 id="completion"><a class="header" href="#completion">Completion</a></h2>
+<p>SendZc(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/enum.SendZcRec.html">SendZcRec</a>) is provided normally through the handler API via UringBearer.</p>
+<h2 id="lifetime-manual-handling"><a class="header" href="#lifetime-manual-handling">Lifetime (Manual handling)</a></h2>
 
                     </main>
 

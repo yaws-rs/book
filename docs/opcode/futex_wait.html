@@ -153,6 +153,25 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="futexwait"><a class="header" href="#futexwait">FutexWait</a></h1>
+<p>FutexWait abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.FutexWait.html">io_uring::opcode::FutexWait</a>.</p>
+<p>This can be used, among other use-cases, to combine epoll_wait or other events waiting on another thread with io_uring completions given atomics can be used to generate completion events through FutexWait.</p>
+<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
+<h2 id="construct"><a class="header" href="#construct">Construct</a></h2>
+<p>You can create the underlying indexed AtomicU32 which will be owned by the UringBearer through:</p>
+<ul>
+<li><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.create_futex_atomic">UringBearer::create_futex_atomic</a></li>
+</ul>
+<p>Alternatively and unsafely you can provide your own AtomicU32 to UringBearer through:</p>
+<ul>
+<li><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.supply_futex_atomic_raw">UringBearer::supply_futex_atomic_raw</a></li>
+</ul>
+<h2 id="submission"><a class="header" href="#submission">Submission</a></h2>
+<p>You can submit a FutexWait through <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_futex_wait">UringBearer::add_futex_wait</a>.</p>
+<h2 id="completion"><a class="header" href="#completion">Completion</a></h2>
+<p>FutexWait(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.FutexWaitRec.html">FutexWaitRec</a>) will show up as normal through the handler API through UringBearer.</p>
+<h2 id="lifetime-manual-handling"><a class="header" href="#lifetime-manual-handling">Lifetime (Manual handling)</a></h2>
+<p>SubmissionRecordStatus::Forget is safe given the pending Completion was Single-shot.</p>
+<p>If the completed record is retained, this will result in memoryleak.</p>
 
                     </main>
 

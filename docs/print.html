@@ -234,8 +234,10 @@
 <p>All the builti-in &amp; OpCode<C> + OpCompletion <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/">trait</a> impls are mapped into <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html">Completion</a> enum.</p>
 <p>To push a bearer-aware submission, use the push_* or push_op_typed methods via the associated <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html">UringBearer</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="accept"><a class="header" href="#accept">Accept</a></h1>
-<p>Single-shot Accept provides the source socket address and port within the completion.</p>
-<p>If you either don't need the source address and / or port, consider using AcceptMulti instead.</p>
+<p>Accept abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.Accept.html">io_uring::opcode::Accept</a>.</p>
+<p>This Single-shot Accept provides the source socket address and port within the completion.</p>
+<p>If you either don't need the source address and / or port, consider using the AcceptMulti instead.</p>
+<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
 <h2 id="submission"><a class="header" href="#submission">Submission</a></h2>
 <p>You can currently push single-shot Accept unsafely depending on whether the underlying TcpListener RawFd is IPv4 or IPv6:</p>
 <ul>
@@ -250,32 +252,108 @@
 <p><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/completion/enum.SubmissionRecordStatus.html">SubmissionRecordStatus::Forget</a> is safe given the pending Completion was Single-shot.</p>
 <p>If the completed record is retained, this will result in memoryleak.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="epollctl"><a class="header" href="#epollctl">EpollCtl</a></h1>
+<p>EpollCtl abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.EpollCtl.html">io_uring::opcode::EpollCtl</a>.</p>
 <p>You can use io_uring to batch the control calls of Epoll.</p>
-<p>For now the separate <a href="https://docs/io-uring-epoll">io-uring-epoll</a> also provides a convenient syscall abstraction into epoll_wait.</p>
+<p>For now the separate <a href="https://docs/io-uring-epoll">io-uring-epoll</a> crate also provides a convenient syscall abstraction into epoll_wait which is not yet available through the io_uring interaface over a regular syscall as of now.</p>
 <p>If you have millions of sockets that constantly change status, it is helpful to be able to batch the control calls.</p>
 <p>See the <a href="https://github.com/yaws-rs/io_uring-utils/tree/main/io-uring-epoll/examples">examples</a> from the io-uring-epoll repository.</p>
-<p><strong>Note</strong>: io-uring-epoll 0.1 crate is differnent to 0.2 which implements the new OpCode/Completion traits.</p>
+<p><strong>Note</strong>: io-uring-epoll 0.1 crate is different to 0.2 which implements the new OpCode/Completion traits.</p>
 <h2 id="construct"><a class="header" href="#construct">Construct</a></h2>
 <ul>
-<li>Construct associated <a href="https://docs/io-uring-epoll">EpollUringHandler::with_bearer(UringBearer)</a></li>
-<li>Construct HandledFd representing individual Epoll triggered RawFd</li>
+<li>Construct associated <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.EpollCtl.html#method.with_epfd_handled">EpollUringHandler::with_bearer(UringBearer)</a>.</li>
+<li>Construct <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.HandledFd.html">HandledFd</a> representing individual Epoll triggered RawFd</li>
 </ul>
 <h2 id="submission-1"><a class="header" href="#submission-1">Submission</a></h2>
 <ul>
-<li>Construct EpollCtl::with_epfd_handled(epfd, handle_fd, your_reference)</li>
-<li>Use UringBearer::push_epoll_ctl to push the constructed EpollCtl</li>
+<li>Construct <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.EpollCtl.html#method.with_epfd_handled">EpollCtl::with_epfd_handled(epfd, handle_fd, your_reference)</a></li>
+<li>Use <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.push_epoll_ctl">UringBearer::push_epoll_ctl</a> to push the constructed EpollCtl as submission.</li>
 </ul>
 <h2 id="completion-1"><a class="header" href="#completion-1">Completion</a></h2>
-<p>EpollCtl(impl OpExtEpollCtl) will show up as normal through the handler API through UringBearer.</p>
+<p>EpollCtl(impl <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpExtEpollCtl.html">OpExtEpollCtl</a>) will show up as normal through the handler API through UringBearer.</p>
 <h2 id="lifetime-manual-handling-1"><a class="header" href="#lifetime-manual-handling-1">Lifetime (Manual handling)</a></h2>
 <p>You should only Forget the underlying EpollCtl when the RawFd is removed from monitored filehandles list.</p>
 <p>Failing to Retain the underlying EpollCtl before removing it will result in undefined behaviour.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="futexwait"><a class="header" href="#futexwait">FutexWait</a></h1>
+<p>FutexWait abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.FutexWait.html">io_uring::opcode::FutexWait</a>.</p>
+<p>This can be used, among other use-cases, to combine epoll_wait or other events waiting on another thread with io_uring completions given atomics can be used to generate completion events through FutexWait.</p>
+<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
+<h2 id="construct-1"><a class="header" href="#construct-1">Construct</a></h2>
+<p>You can create the underlying indexed AtomicU32 which will be owned by the UringBearer through:</p>
+<ul>
+<li><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.create_futex_atomic">UringBearer::create_futex_atomic</a></li>
+</ul>
+<p>Alternatively and unsafely you can provide your own AtomicU32 to UringBearer through:</p>
+<ul>
+<li><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.supply_futex_atomic_raw">UringBearer::supply_futex_atomic_raw</a></li>
+</ul>
+<h2 id="submission-2"><a class="header" href="#submission-2">Submission</a></h2>
+<p>You can submit a FutexWait through <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_futex_wait">UringBearer::add_futex_wait</a>.</p>
+<h2 id="completion-2"><a class="header" href="#completion-2">Completion</a></h2>
+<p>FutexWait(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.FutexWaitRec.html">FutexWaitRec</a>) will show up as normal through the handler API through UringBearer.</p>
+<h2 id="lifetime-manual-handling-2"><a class="header" href="#lifetime-manual-handling-2">Lifetime (Manual handling)</a></h2>
+<p>SubmissionRecordStatus::Forget is safe given the pending Completion was Single-shot.</p>
+<p>If the completed record is retained, this will result in memoryleak.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="providebuffers"><a class="header" href="#providebuffers">ProvideBuffers</a></h1>
+<p>ProvideBuffers abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.ProvideBuffers.html">io_uring::opcode::ProvideBuffers</a>.</p>
+<p>To do faster I/O it is essential to register (or map) any userspace buffers with the kernel so the kernel can spend less time mapping the userspace buffers between the Recv / Send calls.</p>
+<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
+<h2 id="construct-2"><a class="header" href="#construct-2">Construct</a></h2>
+<p>See the main section about <a href="opcode/../buffers.html">Buffers</a> how to manage these.</p>
+<h2 id="submission-3"><a class="header" href="#submission-3">Submission</a></h2>
+<p>Use the <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.provide_buffers">UringBearer::provide_buffers</a> to both submit and associate any created <a href="opcode/../buffers.html">Buffers</a> with kernel-mapped identifiers.</p>
+<p>We may later have API to make this more easier to use but for now the user must keep track of the kernel-mapped identifiers.</p>
+<h2 id="completion-3"><a class="header" href="#completion-3">Completion</a></h2>
+<p>ProvideBuffers(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.ProvideBuffersRec.html">ProvideBuffersRec</a>) is provided normally through the handler API via UringBearer.</p>
+<h2 id="lifetime-manual-handling-3"><a class="header" href="#lifetime-manual-handling-3">Lifetime (Manual handling)</a></h2>
+<p>The actual buffers are separate from the registering it so the submission can be forgotten after completion safely.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recv"><a class="header" href="#recv">Recv</a></h1>
+<p>Single-shot Recv abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.Recv.html">io_uring::opcode::Recv</a>.</p>
+<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
+<h2 id="construct-3"><a class="header" href="#construct-3">Construct</a></h2>
+<p>Recv requires a registered filehandle and previously created indexed buffer.</p>
+<h2 id="submission-4"><a class="header" href="#submission-4">Submission</a></h2>
+<p>Use <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_recv">UringBearer::add_recv</a> to submit a Single-shot Recv to kernel.</p>
+<h2 id="completion-4"><a class="header" href="#completion-4">Completion</a></h2>
+<p>Recv(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.RecvRec.html">RecvRec</a>) is provided normally through the handler API via UringBearer.</p>
+<h2 id="lifetime-manual-handling-4"><a class="header" href="#lifetime-manual-handling-4">Lifetime (Manual handling)</a></h2>
+<p><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/completion/enum.SubmissionRecordStatus.html">SubmissionRecordStatus::Forget</a> is safe given the pending Completion was Single-shot.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recvmulti"><a class="header" href="#recvmulti">RecvMulti</a></h1>
+<p>RecvMulti abstracts the underlying [io_uring::opcode::RecvMulti](https://docs.rs/io-uring/latest/io_uring/opcode/struct.Recv
+Multi.html).</p>
+<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
+<h2 id="construct-4"><a class="header" href="#construct-4">Construct</a></h2>
+<p>RecvMulti requires both a registered filehandle and previously registered / kernel-mapped buffer/s with the referred group.</p>
+<h2 id="submission-5"><a class="header" href="#submission-5">Submission</a></h2>
+<p>Use <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_recv_multi">UringBearer::add_recv_multi</a> to submit a RecvMulti to kernel.</p>
+<h2 id="completion-5"><a class="header" href="#completion-5">Completion</a></h2>
+<p>RecvMulti(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.RecvMultiRec.html">RecvMultiRec</a>) is provided normally through the handler API via UringBearer.</p>
+<p>See <a href="opcode/../buffers.html">Buffers</a> on how to deal with individual "selected buffers" within registered "grouped" Buffers.</p>
+<h2 id="lifetime-manual-handling-5"><a class="header" href="#lifetime-manual-handling-5">Lifetime (Manual handling)</a></h2>
+<p>It would be undefined behaviour if the submission record is invalidated before the Multi-shot submission is either confirmed cancelled or timed out.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="sendzc"><a class="header" href="#sendzc">SendZc</a></h1>
+<p>SendZc abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.SendZc.html">io_uring::opcode::SendZc</a>.</p>
+<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
+<h2 id="construct-5"><a class="header" href="#construct-5">Construct</a></h2>
+<p>Currently SendZc requires the associated indexing (through submission) into:</p>
+<ul>
+<li>registered filehandle (see <a href="opcode/../filehandles.html">Filehandles</a></li>
+<li>registered buffer (see <a href="opcode/../buffers.html">Buffers</a></li>
+<li>kernel buffer id (see <a href="opcode/../buffers.html">Buffers</a></li>
+</ul>
+<h2 id="submission-6"><a class="header" href="#submission-6">Submission</a></h2>
+<p>Currently submit using <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_send_singlebuf">UringBearer::add_send_singlebuf</a>.</p>
+<h2 id="completion-6"><a class="header" href="#completion-6">Completion</a></h2>
+<p>SendZc(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/enum.SendZcRec.html">SendZcRec</a>) is provided normally through the handler API via UringBearer.</p>
+<h2 id="lifetime-manual-handling-6"><a class="header" href="#lifetime-manual-handling-6">Lifetime (Manual handling)</a></h2>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="extensions"><a class="header" href="#extensions">Extensions</a></h1>
+<p>Every OpCode should add:</p>
+<ul>
+<li>It's own separate crate (e.g. <a href="https://docs.rs/io-uring-epoll">io-uring-epoll</a>) and it's own type (e.g. <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.EpollCtl.html">EpollCtl</a>).</li>
+<li>Impl <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpCode.html">OpCode</a> and <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpCompletion.html">OpCompletion</a> from the <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/">io-uring-opcode</a> crate.</li>
+<li>Feature-gated "extension" trait within <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/">io-uring-opcode</a> similar to <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpExtEpollCtl.html">OpExtEpollCtl</a>.</li>
+<li>Feature-gated <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html">UringBearer::Completion</a> variant, e.g. <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html#variant.EpollCtl">Completion::EpollCtl</a> within UringBearer.</li>
+<li>Explicit API to push the OpCode as submission, e.g. <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.push_epoll_ctl">UringBearer::push_epoll_ctl</a></li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ownership-1"><a class="header" href="#ownership-1">Ownership</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="filehandles-1"><a class="header" href="#filehandles-1">Filehandles</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="buffers-1"><a class="header" href="#buffers-1">Buffers</a></h1>

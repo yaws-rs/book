@@ -153,12 +153,24 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="recvmulti"><a class="header" href="#recvmulti">RecvMulti</a></h1>
+<p>RecvMulti abstracts the underlying [io_uring::opcode::RecvMulti](https://docs.rs/io-uring/latest/io_uring/opcode/struct.Recv
+Multi.html).</p>
+<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
+<h2 id="construct"><a class="header" href="#construct">Construct</a></h2>
+<p>RecvMulti requires both a registered filehandle and previously registered / kernel-mapped buffer/s with the referred group.</p>
+<h2 id="submission"><a class="header" href="#submission">Submission</a></h2>
+<p>Use <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_recv_multi">UringBearer::add_recv_multi</a> to submit a RecvMulti to kernel.</p>
+<h2 id="completion"><a class="header" href="#completion">Completion</a></h2>
+<p>RecvMulti(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.RecvMultiRec.html">RecvMultiRec</a>) is provided normally through the handler API via UringBearer.</p>
+<p>See <a href="../buffers.html">Buffers</a> on how to deal with individual "selected buffers" within registered "grouped" Buffers.</p>
+<h2 id="lifetime-manual-handling"><a class="header" href="#lifetime-manual-handling">Lifetime (Manual handling)</a></h2>
+<p>It would be undefined behaviour if the submission record is invalidated before the Multi-shot submission is either confirmed cancelled or timed out.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../ocode/recv.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../opcode/recv.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -172,7 +184,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../ocode/recv.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../opcode/recv.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 

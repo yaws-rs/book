@@ -153,6 +153,14 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="extensions"><a class="header" href="#extensions">Extensions</a></h1>
+<p>Every OpCode should add:</p>
+<ul>
+<li>It's own separate crate (e.g. <a href="https://docs.rs/io-uring-epoll">io-uring-epoll</a>) and it's own type (e.g. <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.EpollCtl.html">EpollCtl</a>).</li>
+<li>Impl <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpCode.html">OpCode</a> and <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpCompletion.html">OpCompletion</a> from the <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/">io-uring-opcode</a> crate.</li>
+<li>Feature-gated "extension" trait within <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/">io-uring-opcode</a> similar to <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpExtEpollCtl.html">OpExtEpollCtl</a>.</li>
+<li>Feature-gated <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html">UringBearer::Completion</a> variant, e.g. <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html#variant.EpollCtl">Completion::EpollCtl</a> within UringBearer.</li>
+<li>Explicit API to push the OpCode as submission, e.g. <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.push_epoll_ctl">UringBearer::push_epoll_ctl</a></li>
+</ul>
 
                     </main>
 

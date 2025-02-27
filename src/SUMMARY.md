@@ -11,7 +11,7 @@
   - [EpollCtl](./opcode/epoll_ctl.md)
   - [FutexWait](./opcode/futex_wait.md)
   - [ProvideBuffers](./opcode/provide_buffers.md)  
-  - [Recv](./ocode/recv.md)
+  - [Recv](./opcode/recv.md)
   - [RecvMulti](./opcode/recv_multi.md)
   - [SendZc](./opcode/send_zc.md)
   - [Extensions](./opcode/extensions.md)
