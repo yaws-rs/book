@@ -153,10 +153,58 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+                        <h1 id="yaws"><a class="header" href="#yaws">yaws</a></h1>
+<p>yaws is a harmonized environment-neutral open source HTTP server capability.</p>
+<p>Traditionally Web Servers are monolithic in nature with the tight coupling of std/environment.</p>
+<p><img src="yaws/./images/legacy_monolithic.jpg" alt="coupled monolithic" /></p>
+<p>yaws de-couples the construct in a way that HTTP servers are environment-neutral in nature.</p>
+<p><img src="yaws/./images/yaws_pluggabiliy.jpg" alt="yaws env neutral" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="architecture"><a class="header" href="#architecture">Architecture</a></h1>
+<p>yaws is driven through it's traits by providing implementation of Input and Output.</p>
+<p><img src="yaws/./images/yaws_io_trait.jpg" alt="yaws io trait" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="flavors"><a class="header" href="#flavors">Flavors</a></h1>
+<p>yaws runtimes are called flavors.</p>
+<p>yaws provides initially the reference runtime drivers implementations for:</p>
+<ul>
+<li>Lunatic Rust+Erlang+WebAssembly Guest-side</li>
+<li>io_uring Linux io_uring Completion Host-side</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="validation"><a class="header" href="#validation">Validation</a></h1>
+<p>yaws Validation consists of the below:</p>
+<ul>
+<li>HTTP Protocol conformance against h1, h2 and h3 specs.</li>
+<li>HTTP-TLS conformance</li>
+</ul>
+<p>Given yaws is organized around it's traits, we validate all the implementations through the trait implementations requiring no I/O.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="security"><a class="header" href="#security">Security</a></h1>
+<h2 id="supported-versions"><a class="header" href="#supported-versions">Supported Versions</a></h2>
+<p>We, as the yaws maintainers, strive to support all previous versions of yaws unless declared End-of-Life.</p>
+<p>Typically -1 major SemVer versions are to be supported at very least when stable.</p>
+<p>Unstable versions prior to the stable major 1 are to be supported through -2 minor releases.</p>
+<h2 id="reporting"><a class="header" href="#reporting">Reporting</a></h2>
+<p>Please contribute security related issues by e-mail to security@TBD prior to any disclosure.</p>
+<p>We ask that contributors give us maintainers a reasonable time to address any issues.</p>
+<p>Maintainers will work collaboratively with any contributor/s in order to verify and fix any encountered issues.</p>
+<p>Contributors are not required to write a PoC or a fix.</p>
+<p>Nonetheless initially private contribution would be most welcome and helpful prior to disclosure if so.</p>
+<h2 id="disclosure"><a class="header" href="#disclosure">Disclosure</a></h2>
+<p>We will publish and credit contributors relating to all the security issues through RustSec which feeds into various security databases independently.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="performance"><a class="header" href="#performance">Performance</a></h1>
+<p>yaws Performance testing consists of the below:</p>
+<ul>
+<li>Low/High load memory</li>
+<li>min+avg+max latency</li>
+<li>Protocol I/O less performance</li>
+<li>HTTP-TLS</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cryptography"><a class="header" href="#cryptography">Cryptography</a></h1>
+<p>yaws HTTP-TLS uses rustls &gt;0.23 behind the scenes.</p>
+<p>It can be configured to various providers implementing CryptoProvider.</p>
+<p>Downstream user does not need to be concerned of the TLS implementation detail.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>yaws io_uring abstracts the underlying low level Linux io_uring library.</p>
-<p>We aim too provide safer semantics towards managing all the moving parts given these have complex lifetimes and ownership, typically shared between the kernel, userspace and the user.</p>
-<p><img src="images/high_level.jpg" alt="high-level" /></p>
+<p>We aim to provide safer semantics towards managing all the moving parts given these have complex lifetimes and ownership, typically shared between the kernel, userspace and the user.</p>
+<p><img src="io_uring/images/high_level.jpg" alt="high-level" /></p>
 <h2 id="bearer"><a class="header" href="#bearer">Bearer</a></h2>
 <p>UringBearer (io-uring-bearer) is the carrier holding all of the io_uring associated generated instances of types.</p>
 <h2 id="opcode"><a class="header" href="#opcode">OpCode</a></h2>
@@ -298,9 +346,9 @@
 <p>To do faster I/O it is essential to register (or map) any userspace buffers with the kernel so the kernel can spend less time mapping the userspace buffers between the Recv / Send calls.</p>
 <p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
 <h2 id="construct-2"><a class="header" href="#construct-2">Construct</a></h2>
-<p>See the main section about <a href="opcode/../buffers.html">Buffers</a> how to manage these.</p>
+<p>See the main section about <a href="io_uring/opcode/../buffers.html">Buffers</a> how to manage these.</p>
 <h2 id="submission-3"><a class="header" href="#submission-3">Submission</a></h2>
-<p>Use the <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.provide_buffers">UringBearer::provide_buffers</a> to both submit and associate any created <a href="opcode/../buffers.html">Buffers</a> with kernel-mapped identifiers.</p>
+<p>Use the <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.provide_buffers">UringBearer::provide_buffers</a> to both submit and associate any created <a href="io_uring/opcode/../buffers.html">Buffers</a> with kernel-mapped identifiers.</p>
 <p>We may later have API to make this more easier to use but for now the user must keep track of the kernel-mapped identifiers.</p>
 <h2 id="completion-3"><a class="header" href="#completion-3">Completion</a></h2>
 <p>ProvideBuffers(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.ProvideBuffersRec.html">ProvideBuffersRec</a>) is provided normally through the handler API via UringBearer.</p>
@@ -327,7 +375,7 @@ Multi.html).</p>
 <p>Use <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_recv_multi">UringBearer::add_recv_multi</a> to submit a RecvMulti to kernel.</p>
 <h2 id="completion-5"><a class="header" href="#completion-5">Completion</a></h2>
 <p>RecvMulti(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.RecvMultiRec.html">RecvMultiRec</a>) is provided normally through the handler API via UringBearer.</p>
-<p>See <a href="opcode/../buffers.html">Buffers</a> on how to deal with individual "selected buffers" within registered "grouped" Buffers.</p>
+<p>See <a href="io_uring/opcode/../buffers.html">Buffers</a> on how to deal with individual "selected buffers" within registered "grouped" Buffers.</p>
 <h2 id="lifetime-manual-handling-5"><a class="header" href="#lifetime-manual-handling-5">Lifetime (Manual handling)</a></h2>
 <p>It would be undefined behaviour if the submission record is invalidated before the Multi-shot submission is either confirmed cancelled or timed out.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="sendzc"><a class="header" href="#sendzc">SendZc</a></h1>
@@ -336,9 +384,9 @@ Multi.html).</p>
 <h2 id="construct-5"><a class="header" href="#construct-5">Construct</a></h2>
 <p>Currently SendZc requires the associated indexing (through submission) into:</p>
 <ul>
-<li>registered filehandle (see <a href="opcode/../filehandles.html">Filehandles</a></li>
-<li>registered buffer (see <a href="opcode/../buffers.html">Buffers</a></li>
-<li>kernel buffer id (see <a href="opcode/../buffers.html">Buffers</a></li>
+<li>registered filehandle (see <a href="io_uring/opcode/../filehandles.html">Filehandles</a></li>
+<li>registered buffer (see <a href="io_uring/opcode/../buffers.html">Buffers</a></li>
+<li>kernel buffer id (see <a href="io_uring/opcode/../buffers.html">Buffers</a></li>
 </ul>
 <h2 id="submission-6"><a class="header" href="#submission-6">Submission</a></h2>
 <p>Currently submit using <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_send_singlebuf">UringBearer::add_send_singlebuf</a>.</p>

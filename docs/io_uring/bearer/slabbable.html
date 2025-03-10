@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>EpollCtl - yaws</title>
+        <title>Slabbable - yaws</title>
 
 
         <!-- Custom HTML head -->
@@ -12,32 +12,32 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="../highlight.css">
-        <link rel="stylesheet" href="../tomorrow-night.css">
-        <link rel="stylesheet" href="../ayu-highlight.css">
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root to javascript -->
         <script>
-            var path_to_root = "../";
+            var path_to_root = "../../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../../toc.js"></script>
     </head>
     <body>
     <div id="body-container">
@@ -89,7 +89,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -123,7 +123,7 @@
                     <h1 class="menu-title">yaws</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -152,38 +152,30 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="epollctl"><a class="header" href="#epollctl">EpollCtl</a></h1>
-<p>EpollCtl abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.EpollCtl.html">io_uring::opcode::EpollCtl</a>.</p>
-<p>You can use io_uring to batch the control calls of Epoll.</p>
-<p>For now the separate <a href="https://docs/io-uring-epoll">io-uring-epoll</a> crate also provides a convenient syscall abstraction into epoll_wait which is not yet available through the io_uring interaface over a regular syscall as of now.</p>
-<p>If you have millions of sockets that constantly change status, it is helpful to be able to batch the control calls.</p>
-<p>See the <a href="https://github.com/yaws-rs/io_uring-utils/tree/main/io-uring-epoll/examples">examples</a> from the io-uring-epoll repository.</p>
-<p><strong>Note</strong>: io-uring-epoll 0.1 crate is different to 0.2 which implements the new OpCode/Completion traits.</p>
-<h2 id="construct"><a class="header" href="#construct">Construct</a></h2>
-<ul>
-<li>Construct associated <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.EpollCtl.html#method.with_epfd_handled">EpollUringHandler::with_bearer(UringBearer)</a>.</li>
-<li>Construct <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.HandledFd.html">HandledFd</a> representing individual Epoll triggered RawFd</li>
-</ul>
-<h2 id="submission"><a class="header" href="#submission">Submission</a></h2>
-<ul>
-<li>Construct <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.EpollCtl.html#method.with_epfd_handled">EpollCtl::with_epfd_handled(epfd, handle_fd, your_reference)</a></li>
-<li>Use <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.push_epoll_ctl">UringBearer::push_epoll_ctl</a> to push the constructed EpollCtl as submission.</li>
-</ul>
-<h2 id="completion"><a class="header" href="#completion">Completion</a></h2>
-<p>EpollCtl(impl <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpExtEpollCtl.html">OpExtEpollCtl</a>) will show up as normal through the handler API through UringBearer.</p>
-<h2 id="lifetime-manual-handling"><a class="header" href="#lifetime-manual-handling">Lifetime (Manual handling)</a></h2>
-<p>You should only Forget the underlying EpollCtl when the RawFd is removed from monitored filehandles list.</p>
-<p>Failing to Retain the underlying EpollCtl before removing it will result in undefined behaviour.</p>
+                        <h1 id="slabbable"><a class="header" href="#slabbable">Slabbable</a></h1>
+<p>See <a href="https://github.com/pinkforest/pinkforest/blob/main/2025-01-25-slabbable.md">blog</a> which describes the <a href="https://docs.rs/slabbable/latest/slabbable/trait.Slabbable.html">Slabbable</a> trait in general.</p>
+<p>Normal Vec etc. would implicitly allocate without warning and invalidate the underlying addresses.</p>
+<p>Given that memory addresses need to be kept stable for many things submitted to the io_uring queue,</p>
+<p><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html">UringBearer</a> uses <a href="https://docs.rs/slabbable/latest/slabbable/trait.Slabbable.html">Slabbable</a> to back the underlying pending or completed instances of <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html">Completion</a>.</p>
+<p>Any top-level binary can configure the desired Slabbable implementation through <a href="https://docs.rs/slabbable-impl-selector/latest/slabbable_impl_selector/">SelectedSlab</a>.</p>
+<p>By default the crate currently uses nohash-hasher through HashBrown through <a href="https://docs.rs/slabbable-hash/latest/slabbable_hash/">slabbable-hash</a>.</p>
+<h2 id="completions"><a class="header" href="#completions">Completions</a></h2>
+<p>We exploit the fact that Kernel doesn't make any opinion what the userdata should contain for the pending completions by giving each submission a rotating u64 identifier which can then be mapped into the completed type upon completion.</p>
+<p>This avoids using any from_raw_parts -like re-construction when we can refer through rotating u64 serial through storage.</p>
+<p>We could also use <a href="https://doc.rust-lang.org/std/mem/fn.forget.html">std::mem::forget</a> but we can also model this through the trait giving the option to the user what kind of storage they would like.</p>
+<p>Main reason we like to track the items is we that can have some level of ownership / pointer provenance, manage easily any associated data (e.g. regarding the ownership) and more importantly we can construct a gated accessor / barrier to it whilst when for example the kernel has only immutable reference to the said data meaning we can also hold immutable references whilst doing so where as simply forgetting the submitted data.</p>
+<p>Not only this but sometimes you might have an arena of buffers (e.g. group of buffers) that are provided to kernel and you must handle the ownership status of window / slice into the part of group of continuous buffers that have been provided back essentially fragmenting the type in some scenarios.</p>
+<p>In short, the trait gives us the flexibility and we are able to test that all the implementations uphold the guarantees whilst leaving us easy way to benchmark any possible scenarios through the varying implementation in one go.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../opcode/accept.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../io_uring/bearer/capacity.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../opcode/futex_wait.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../io_uring/opcode.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -193,11 +185,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../opcode/accept.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../io_uring/bearer/capacity.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../opcode/futex_wait.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../io_uring/opcode.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -228,13 +220,13 @@
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
 
         <!-- Custom JS scripts -->
 
