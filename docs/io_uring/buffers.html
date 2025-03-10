@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Slabbable - yaws</title>
+        <title>Buffers - yaws</title>
 
 
         <!-- Custom HTML head -->
@@ -152,32 +152,16 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="slabbable"><a class="header" href="#slabbable">Slabbable</a></h1>
-<p>See <a href="https://github.com/pinkforest/pinkforest/blob/main/2025-01-25-slabbable.md">blog</a> which describes the <a href="https://docs.rs/slabbable/latest/slabbable/trait.Slabbable.html">Slabbable</a> trait in general.</p>
-<p>Normal Vec etc. would implicitly allocate without warning and invalidate the underlying addresses.</p>
-<p>Given that memory addresses need to be kept stable for many things submitted to the io_uring queue,</p>
-<p><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html">UringBearer</a> uses <a href="https://docs.rs/slabbable/latest/slabbable/trait.Slabbable.html">Slabbable</a> to back the underlying pending or completed instances of <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html">Completion</a>.</p>
-<p>Any top-level binary can configure the desired Slabbable implementation through <a href="https://docs.rs/slabbable-impl-selector/latest/slabbable_impl_selector/">SelectedSlab</a>.</p>
-<p>By default the crate currently uses nohash-hasher through HashBrown through <a href="https://docs.rs/slabbable-hash/latest/slabbable_hash/">slabbable-hash</a>.</p>
-<h2 id="completions"><a class="header" href="#completions">Completions</a></h2>
-<p>We exploit the fact that Kernel doesn't make any opinion what the userdata should contain for the pending completions by giving each submission a rotating u64 identifier which can then be mapped into the completed type upon completion.</p>
-<p>This avoids using any from_raw_parts -like re-construction when we can refer through rotating u64 serial through storage.</p>
-<p>We could also use <a href="https://doc.rust-lang.org/std/mem/fn.forget.html">std::mem::forget</a> but we can also model this through the trait giving the option to the user what kind of storage they would like.</p>
-<p>Main reason we like to track the items is we that can have some level of ownership / pointer provenance, manage easily any associated data (e.g. regarding the ownership) and more importantly we can construct a gated accessor / barrier to it whilst when for example the kernel has only immutable reference to the said data meaning we can also hold immutable references whilst doing so where as simply forgetting the submitted data.</p>
-<p>Not only this but sometimes you might have an arena of buffers (e.g. group of buffers) that are provided to kernel and you must handle the ownership status of window / slice into the part of group of continuous buffers that have been provided back essentially fragmenting the type in some scenarios.</p>
-<p>In short, the trait gives us the flexibility and we are able to test that all the implementations uphold the guarantees whilst leaving us easy way to benchmark any possible scenarios through the varying implementation in one go.</p>
+                        <h1 id="buffers"><a class="header" href="#buffers">Buffers</a></h1>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../bearer/capacity.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../io_uring/fd.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../opcode.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -185,13 +169,10 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../bearer/capacity.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../io_uring/fd.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../opcode.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>

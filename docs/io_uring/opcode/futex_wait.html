@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - yaws</title>
+        <title>FutexWait - yaws</title>
 
 
         <!-- Custom HTML head -->
@@ -12,32 +12,32 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root to javascript -->
         <script>
-            var path_to_root = "";
+            var path_to_root = "../../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc.js"></script>
+        <script src="../../toc.js"></script>
     </head>
     <body>
     <div id="body-container">
@@ -89,7 +89,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -123,7 +123,7 @@
                     <h1 class="menu-title">yaws</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -152,19 +152,36 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="yaws"><a class="header" href="#yaws">yaws</a></h1>
-<p>yaws is a harmonized environment-neutral open source HTTP server capability.</p>
-<p>Traditionally Web Servers are monolithic in nature with the tight coupling of std/environment.</p>
-<p><img src="./images/legacy_monolithic.jpg" alt="coupled monolithic" /></p>
-<p>yaws de-couples the construct in a way that HTTP servers are environment-neutral in nature.</p>
-<p><img src="./images/yaws_pluggabiliy.jpg" alt="yaws env neutral" /></p>
+                        <h1 id="futexwait"><a class="header" href="#futexwait">FutexWait</a></h1>
+<p>FutexWait abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.FutexWait.html">io_uring::opcode::FutexWait</a>.</p>
+<p>This can be used, among other use-cases, to combine epoll_wait or other events waiting on another thread with io_uring completions given atomics can be used to generate completion events through FutexWait.</p>
+<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
+<h2 id="construct"><a class="header" href="#construct">Construct</a></h2>
+<p>You can create the underlying indexed AtomicU32 which will be owned by the UringBearer through:</p>
+<ul>
+<li><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.create_futex_atomic">UringBearer::create_futex_atomic</a></li>
+</ul>
+<p>Alternatively and unsafely you can provide your own AtomicU32 to UringBearer through:</p>
+<ul>
+<li><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.supply_futex_atomic_raw">UringBearer::supply_futex_atomic_raw</a></li>
+</ul>
+<h2 id="submission"><a class="header" href="#submission">Submission</a></h2>
+<p>You can submit a FutexWait through <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_futex_wait">UringBearer::add_futex_wait</a>.</p>
+<h2 id="completion"><a class="header" href="#completion">Completion</a></h2>
+<p>FutexWait(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.FutexWaitRec.html">FutexWaitRec</a>) will show up as normal through the handler API through UringBearer.</p>
+<h2 id="lifetime-manual-handling"><a class="header" href="#lifetime-manual-handling">Lifetime (Manual handling)</a></h2>
+<p>SubmissionRecordStatus::Forget is safe given the pending Completion was Single-shot.</p>
+<p>If the completed record is retained, this will result in memoryleak.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../io_uring/opcode/epoll_ctl.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="yaws/architechture.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../io_uring/opcode/provide_buffers.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -174,8 +191,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../io_uring/opcode/epoll_ctl.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="yaws/architechture.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../io_uring/opcode/provide_buffers.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -206,13 +226,13 @@
         </script>
 
 
-        <script src="elasticlunr.min.js"></script>
-        <script src="mark.min.js"></script>
-        <script src="searcher.js"></script>
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
 
-        <script src="clipboard.min.js"></script>
-        <script src="highlight.js"></script>
-        <script src="book.js"></script>
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
 
         <!-- Custom JS scripts -->
 
