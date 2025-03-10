@@ -163,12 +163,24 @@
 <p>yaws is driven through it's traits by providing implementation of Input and Output.</p>
 <p><img src="yaws/./images/yaws_io_trait.jpg" alt="yaws io trait" /></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="flavors"><a class="header" href="#flavors">Flavors</a></h1>
-<p>yaws runtimes are called flavors.</p>
-<p>yaws provides initially the reference runtime drivers implementations for:</p>
+<p>yaws reference runtime implementations are called flavors.</p>
+<p>yaws provides initially the reference runtimes or flavors for:</p>
 <ul>
 <li>Lunatic Rust+Erlang+WebAssembly Guest-side</li>
 <li>io_uring Linux io_uring Completion Host-side</li>
 </ul>
+<h1 id="binary-runtime"><a class="header" href="#binary-runtime">Binary Runtime</a></h1>
+<p>User can run any of the flavors directly as binary through <code>cfg(yaws_flavor)</code>.</p>
+<p>This cfg can be either supplied through <code>.cargo/config.toml</code> or through <code>--cfg</code> via the top-level binary.</p>
+<h2 id="io_uring-binary"><a class="header" href="#io_uring-binary">io_uring Binary</a></h2>
+<pre><code>$ RUSTFLAGS="--cfg yaws_flavor=\"io_uring\"" cargo run --bin yaws
+</code></pre>
+<h2 id="lunatic-binary"><a class="header" href="#lunatic-binary">Lunatic Binary</a></h2>
+<pre><code>$ RUSTFLAGS="--cfg yaws_flavor=\"lunatic\"" cargo run --bin yaws --target wasm32-wasi
+</code></pre>
+<h1 id="library-driver"><a class="header" href="#library-driver">Library Driver</a></h1>
+<p>User can implement the I/O traits in conjuction with the abstract machines implementing HTTP.</p>
+<p>Refer to the API documentation or see the existing reference runtimes or flavors for examples.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="validation"><a class="header" href="#validation">Validation</a></h1>
 <p>yaws Validation consists of the below:</p>
 <ul>
