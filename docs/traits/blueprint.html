@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - yaws</title>
+        <title>BluePrint - yaws</title>
 
 
         <!-- Custom HTML head -->
@@ -152,32 +152,24 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>yaws io_uring abstracts the underlying low level Linux io_uring library.</p>
-<p>We aim to provide safer semantics towards managing all the moving parts given these have complex lifetimes and ownership, typically shared between the kernel, userspace and the user.</p>
-<p><img src="images/high_level.jpg" alt="high-level" /></p>
-<h2 id="bearer"><a class="header" href="#bearer">Bearer</a></h2>
-<p>UringBearer (io-uring-bearer) is the carrier holding all of the io_uring associated generated instances of types.</p>
-<h2 id="opcode"><a class="header" href="#opcode">OpCode</a></h2>
-<p>OpCode and OpCode (io-uring-opcode) are the contracts between bearer and individual opcode implementations.</p>
-<p>In addition it provides the required extension traits for implementing the individual opcodes.</p>
-<h2 id="ownership"><a class="header" href="#ownership">Ownership</a></h2>
-<p>Owner (io-uring-owner) provides the ownership semantics between kernel, userspace and the user.</p>
-<h2 id="filehandles"><a class="header" href="#filehandles">Filehandles</a></h2>
-<p>RegisteredFd and FdKind (io-uring-fd) provides the types representing filehandles within io_uring.</p>
-<h2 id="buffers"><a class="header" href="#buffers">Buffers</a></h2>
-<p>UringBuffer (io-uring-buffer) will provide the types representing buffers within io_uring.</p>
-<p><strong>Note</strong>: As of time writing buffers are still within the bearer but this will change.</p>
+                        <h1 id="yaws-blueprint"><a class="header" href="#yaws-blueprint">Yaws BluePrint</a></h1>
+<p>Yaws Blueprints represent the static blueprints of intended state machine configuration used to instantiate Orbits running the state machines.</p>
+<p>Typically a runtime (such as yaoi) provides "injection point" to both instantiate and advance instances of chained up state machines forward with the I/O managed by the runtime.</p>
+<p>A static collection of configured BluePrint is typically injected through runtime for each accepted or connected TCP Client.</p>
+<p>Yaws blueprints are designed to be used in either std or no_std as well as alloc-optional environments.</p>
+<h2 id="configuration"><a class="header" href="#configuration">Configuration</a></h2>
+<p>See example on how a <a href="https://github.com/yaws-rs/yaoi/blob/main/examples/blueprint-tls-http/src/main.rs#L39">HTTPS pipeline is configured</a> which is <a href="https://github.com/yaws-rs/yaoi/blob/main/examples/blueprint-tls-http/src/main.rs#L59">then injected</a> for the instantiated client/server contextes that bring together chained blueorints.</p>
+<p>Each protocol or app take either default configuration or with_configuration upon instantiation into a running set of chained Orbit.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../protocols/h11spec.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../traits/overview.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../io_uring/bearer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../traits/orbit.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -187,11 +179,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../protocols/h11spec.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../traits/overview.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../io_uring/bearer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../traits/orbit.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

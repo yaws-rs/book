@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - yaws</title>
+        <title>Orbit - yaws</title>
 
 
         <!-- Custom HTML head -->
@@ -152,32 +152,57 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>yaws io_uring abstracts the underlying low level Linux io_uring library.</p>
-<p>We aim to provide safer semantics towards managing all the moving parts given these have complex lifetimes and ownership, typically shared between the kernel, userspace and the user.</p>
-<p><img src="images/high_level.jpg" alt="high-level" /></p>
-<h2 id="bearer"><a class="header" href="#bearer">Bearer</a></h2>
-<p>UringBearer (io-uring-bearer) is the carrier holding all of the io_uring associated generated instances of types.</p>
-<h2 id="opcode"><a class="header" href="#opcode">OpCode</a></h2>
-<p>OpCode and OpCode (io-uring-opcode) are the contracts between bearer and individual opcode implementations.</p>
-<p>In addition it provides the required extension traits for implementing the individual opcodes.</p>
-<h2 id="ownership"><a class="header" href="#ownership">Ownership</a></h2>
-<p>Owner (io-uring-owner) provides the ownership semantics between kernel, userspace and the user.</p>
-<h2 id="filehandles"><a class="header" href="#filehandles">Filehandles</a></h2>
-<p>RegisteredFd and FdKind (io-uring-fd) provides the types representing filehandles within io_uring.</p>
-<h2 id="buffers"><a class="header" href="#buffers">Buffers</a></h2>
-<p>UringBuffer (io-uring-buffer) will provide the types representing buffers within io_uring.</p>
-<p><strong>Note</strong>: As of time writing buffers are still within the bearer but this will change.</p>
+                        <h1 id="yaws-orbit"><a class="header" href="#yaws-orbit">Yaws Orbit</a></h1>
+<p>Yaws Orbits are the instantiated state machines from set of blueprints typically run as "pipelines" with the given set of external I/O.</p>
+<p>All Orbits are advanced using [Left] and [Right] traits.</p>
+<p>See example Orbit implementation <a href="https://github.com/yaws-rs/tls/blob/main/blueprint/src/tls_blueprints.rs#L20">advancing the TLS state machine</a> which advances either the client or server TLS contextes.</p>
+<p>Within each blueprint composition there must be at least one App layer with the intermediate Layers being optional.</p>
+<p>Within the runtime, each runtime makes the decision/s on how to process all the intermediate layers as well as the terminating layers given each runtime is expected to have it's unique I/O characteristics.</p>
+<p>Typically all the runtimes first processes the raw I/O all the way from Left to Right (as input) and then secondly provides the final summary (or reduced output) from all the chained state machines through back into the I/O layer, essentially advancing first from Left to Right for input and then from Right to Left for the final output.</p>
+<h2 id="instantiation"><a class="header" href="#instantiation">Instantiation</a></h2>
+<p>A typical chain of <code>Orbit</code> might be instantiated as follows:</p>
+<pre><code class="language-no_run">fn tls_server_blueprints() -&gt; Result&lt;Blueprints&lt;1, Orbits&gt;, ConfigurationError&gt; {
+   let tls_config_server =
+        TlsServerConfig::with_certs_and_key_file(Path::new(CA), Path::new(CERT), Path::new(KEY))
+            .unwrap();
+    let server_context =
+        blueprint_tls::TlsContext::Server(TlsServer::with_config(tls_config_server).unwrap());
+
+    BlueprintsLayers::&lt;1&gt;::layers([Orbits::Tls(server_context)])
+        .app(Orbits::H11Server(H11SpecServer::with_defaults().unwrap()))
+}
+</code></pre>
+<p>Which is typically then provided into the runtime upon instantiation of new clients e.g. in yaoi [upon TCP accept]</p>
+<pre><code class="language-no_run">// uncomment for cleartext only pipeline
+//    let mut bp_listener: [Blueprints::&lt;1, Orbits&gt;; 2] = core::array::from_fn(|_| tls_server_blueprints());
+let mut bp_listener: [Blueprints::&lt;0, Orbits&gt;; 2] = core::array::from_fn(|_| clear_server_blueprints());
+
+// Setup Listener behaviour on_accept
+listener
+  .accept_with_cb(&amp;mut bp_listener, |ud, stream| {
+          let id = stream.fixed_fd().unwrap() as usize;
+
+          stream.run_blueprints(&amp;mut ud[id-1]).unwrap();
+      })
+      .unwrap();
+</code></pre>
+<h2 id="layer"><a class="header" href="#layer">Layer</a></h2>
+<p>Each Layer, is designed to sit between the actual I/O and the terminating App is typically provided both the <strong>Left</strong> and <strong>Right</strong> implementations.</p>
+<p>A good way of thinking both the Left and Right side in the context of TLS is that <a href="./left.html">Left</a> is intended for the "Ciphertext" side where as the <a href="./right.html">Right
+</a> is intended for the "Cleartext" side providing clear isolation from either through the processing.</p>
+<p>Given all the Layers can be stacked (or nested) statically on each other they do not know about each other where the runtime is dedicated to passing both the I/O through to advance each of the Layer within the chained instantiated blueprints.</p>
+<h2 id="app"><a class="header" href="#app">App</a></h2>
+<p>An App on the otherhand is designed to terminate the I/O processing pipeline as the last remaining "Layer" typically only interested of the <strong>Left</strong> side I/O.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../protocols/h11spec.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../traits/blueprint.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../io_uring/bearer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../traits/left.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -187,11 +212,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../protocols/h11spec.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../traits/blueprint.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../io_uring/bearer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../traits/left.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - yaws</title>
+        <title>Overview - yaws</title>
 
 
         <!-- Custom HTML head -->
@@ -152,32 +152,24 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>yaws io_uring abstracts the underlying low level Linux io_uring library.</p>
-<p>We aim to provide safer semantics towards managing all the moving parts given these have complex lifetimes and ownership, typically shared between the kernel, userspace and the user.</p>
-<p><img src="images/high_level.jpg" alt="high-level" /></p>
-<h2 id="bearer"><a class="header" href="#bearer">Bearer</a></h2>
-<p>UringBearer (io-uring-bearer) is the carrier holding all of the io_uring associated generated instances of types.</p>
-<h2 id="opcode"><a class="header" href="#opcode">OpCode</a></h2>
-<p>OpCode and OpCode (io-uring-opcode) are the contracts between bearer and individual opcode implementations.</p>
-<p>In addition it provides the required extension traits for implementing the individual opcodes.</p>
-<h2 id="ownership"><a class="header" href="#ownership">Ownership</a></h2>
-<p>Owner (io-uring-owner) provides the ownership semantics between kernel, userspace and the user.</p>
-<h2 id="filehandles"><a class="header" href="#filehandles">Filehandles</a></h2>
-<p>RegisteredFd and FdKind (io-uring-fd) provides the types representing filehandles within io_uring.</p>
-<h2 id="buffers"><a class="header" href="#buffers">Buffers</a></h2>
-<p>UringBuffer (io-uring-buffer) will provide the types representing buffers within io_uring.</p>
-<p><strong>Note</strong>: As of time writing buffers are still within the bearer but this will change.</p>
+                        <h1 id="state-machines-overview"><a class="header" href="#state-machines-overview">State Machines Overview</a></h1>
+<p>yaws Layers (or State machines) run statefully typically to transform Left side into Right side in a chain of state machines.</p>
+<p>State machines don't know about each others existence and they can be processed as isolated stateful computation units independently and in parallel.</p>
+<p>Given the design characteristics state machines should store as little stateful information as possible and process the traffic in streaming fashion.</p>
+<p>Users typically instantiate running state machines as orbits through blueprints and then provide them to the runtime driver which advances all the chained state machines in the provided context.</p>
+<h2 id="known-blueprints"><a class="header" href="#known-blueprints">Known Blueprints</a></h2>
+<p>Source: <a href="https://github.com/yaws-rs/blueprint/blob/main/known/src/lib.rs">yaws-rs/blueprint/known</a></p>
+<p>Given the blueprints have to be typically constructed using same type, we provide a static enum dispatch of all the known blueprints to avoid dynamistic indirection.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../protocols/h11spec.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../runtimes/yaoi.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../io_uring/bearer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../protocols/tls.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -187,11 +179,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../protocols/h11spec.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../runtimes/yaoi.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../io_uring/bearer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../protocols/tls.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

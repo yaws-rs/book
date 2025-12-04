@@ -213,6 +213,144 @@
 <p>yaws HTTP-TLS uses rustls &gt;0.23 behind the scenes.</p>
 <p>It can be configured to various providers implementing CryptoProvider.</p>
 <p>Downstream user does not need to be concerned of the TLS implementation detail.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="yaws-sans-io-overview"><a class="header" href="#yaws-sans-io-overview">Yaws Sans-I/O Overview</a></h1>
+<p>Yaws de-couples all the I/O from the rest of the state machine with the follwing set of traits with differing set of implementors.</p>
+<p>The below traits are intended to be implemented by both the state machines &amp; runtimes.</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Trait</th><th style="text-align: left">Description</th></tr></thead><tbody>
+<tr><td style="text-align: left"><a href="traits/./blueprint.html">BluePrint</a></td><td style="text-align: left">Constructor to instantiate Orbits</td></tr>
+<tr><td style="text-align: left"><a href="traits/./orbit.html">Orbit</a></td><td style="text-align: left">Instantiated State machines</td></tr>
+</tbody></table>
+</div>
+<p>And the I/O traits are intended to be implemented by the runtimes handling I/O:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Trait</th><th style="text-align: left">Description</th></tr></thead><tbody>
+<tr><td style="text-align: left"><a href="traits/./left.html">NoLeft</a> &amp; <a href="traits/./left.html">Left</a></td><td style="text-align: left">"Left" side of the state machine/s</td></tr>
+<tr><td style="text-align: left"><a href="traits/./right.html">NoRight</a> &amp; <a href="traits/./right.html">Right</a></td><td style="text-align: left">"Right" side of the state machine/s</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="yaws-blueprint"><a class="header" href="#yaws-blueprint">Yaws BluePrint</a></h1>
+<p>Yaws Blueprints represent the static blueprints of intended state machine configuration used to instantiate Orbits running the state machines.</p>
+<p>Typically a runtime (such as yaoi) provides "injection point" to both instantiate and advance instances of chained up state machines forward with the I/O managed by the runtime.</p>
+<p>A static collection of configured BluePrint is typically injected through runtime for each accepted or connected TCP Client.</p>
+<p>Yaws blueprints are designed to be used in either std or no_std as well as alloc-optional environments.</p>
+<h2 id="configuration"><a class="header" href="#configuration">Configuration</a></h2>
+<p>See example on how a <a href="https://github.com/yaws-rs/yaoi/blob/main/examples/blueprint-tls-http/src/main.rs#L39">HTTPS pipeline is configured</a> which is <a href="https://github.com/yaws-rs/yaoi/blob/main/examples/blueprint-tls-http/src/main.rs#L59">then injected</a> for the instantiated client/server contextes that bring together chained blueorints.</p>
+<p>Each protocol or app take either default configuration or with_configuration upon instantiation into a running set of chained Orbit.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="yaws-orbit"><a class="header" href="#yaws-orbit">Yaws Orbit</a></h1>
+<p>Yaws Orbits are the instantiated state machines from set of blueprints typically run as "pipelines" with the given set of external I/O.</p>
+<p>All Orbits are advanced using [Left] and [Right] traits.</p>
+<p>See example Orbit implementation <a href="https://github.com/yaws-rs/tls/blob/main/blueprint/src/tls_blueprints.rs#L20">advancing the TLS state machine</a> which advances either the client or server TLS contextes.</p>
+<p>Within each blueprint composition there must be at least one App layer with the intermediate Layers being optional.</p>
+<p>Within the runtime, each runtime makes the decision/s on how to process all the intermediate layers as well as the terminating layers given each runtime is expected to have it's unique I/O characteristics.</p>
+<p>Typically all the runtimes first processes the raw I/O all the way from Left to Right (as input) and then secondly provides the final summary (or reduced output) from all the chained state machines through back into the I/O layer, essentially advancing first from Left to Right for input and then from Right to Left for the final output.</p>
+<h2 id="instantiation"><a class="header" href="#instantiation">Instantiation</a></h2>
+<p>A typical chain of <code>Orbit</code> might be instantiated as follows:</p>
+<pre><code class="language-no_run">fn tls_server_blueprints() -&gt; Result&lt;Blueprints&lt;1, Orbits&gt;, ConfigurationError&gt; {
+   let tls_config_server =
+        TlsServerConfig::with_certs_and_key_file(Path::new(CA), Path::new(CERT), Path::new(KEY))
+            .unwrap();
+    let server_context =
+        blueprint_tls::TlsContext::Server(TlsServer::with_config(tls_config_server).unwrap());
+
+    BlueprintsLayers::&lt;1&gt;::layers([Orbits::Tls(server_context)])
+        .app(Orbits::H11Server(H11SpecServer::with_defaults().unwrap()))
+}
+</code></pre>
+<p>Which is typically then provided into the runtime upon instantiation of new clients e.g. in yaoi [upon TCP accept]</p>
+<pre><code class="language-no_run">// uncomment for cleartext only pipeline
+//    let mut bp_listener: [Blueprints::&lt;1, Orbits&gt;; 2] = core::array::from_fn(|_| tls_server_blueprints());
+let mut bp_listener: [Blueprints::&lt;0, Orbits&gt;; 2] = core::array::from_fn(|_| clear_server_blueprints());
+
+// Setup Listener behaviour on_accept
+listener
+  .accept_with_cb(&amp;mut bp_listener, |ud, stream| {
+          let id = stream.fixed_fd().unwrap() as usize;
+
+          stream.run_blueprints(&amp;mut ud[id-1]).unwrap();
+      })
+      .unwrap();
+</code></pre>
+<h2 id="layer"><a class="header" href="#layer">Layer</a></h2>
+<p>Each Layer, is designed to sit between the actual I/O and the terminating App is typically provided both the <strong>Left</strong> and <strong>Right</strong> implementations.</p>
+<p>A good way of thinking both the Left and Right side in the context of TLS is that <a href="traits/./left.html">Left</a> is intended for the "Ciphertext" side where as the <a href="traits/./right.html">Right
+</a> is intended for the "Cleartext" side providing clear isolation from either through the processing.</p>
+<p>Given all the Layers can be stacked (or nested) statically on each other they do not know about each other where the runtime is dedicated to passing both the I/O through to advance each of the Layer within the chained instantiated blueprints.</p>
+<h2 id="app"><a class="header" href="#app">App</a></h2>
+<p>An App on the otherhand is designed to terminate the I/O processing pipeline as the last remaining "Layer" typically only interested of the <strong>Left</strong> side I/O.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="left-of-state-machines"><a class="header" href="#left-of-state-machines">Left of State Machines</a></h1>
+<p>The <strong>Left</strong> side of the state machines can be thought as the I/O originating side, produced by the runtime (responsible of managing I/O) and consumed by the state machine/s (responsible of processing the I/O provided by the runtime/s)</p>
+<p>As an example in the TLS, we use the <strong>Left</strong> side as the "Ciphertext" side.</p>
+<p>The trait and it's requirements is defined through the blueprint crate.</p>
+<h2 id="requirements--assumptions"><a class="header" href="#requirements--assumptions">Requirements / Assumptions</a></h2>
+<p>The following requirements / assumptions are currently made as of v0.1.0:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">fn</th><th style="text-align: left">Description</th><th style="text-align: left">Assumptions</th></tr></thead><tbody>
+<tr><td style="text-align: left">[set_]left_in_blocked</td><td style="text-align: left">Is Left blocked ?</td><td style="text-align: left">Right will not advance, see Blocking Left section below</td></tr>
+<tr><td style="text-align: left">left_set_lens</td><td style="text-align: left">Set new lengths for Left buffers</td><td style="text-align: left">Bounds are respected and checked by the state machines, see chapter <a href="traits/./runtimes/buffering.html">Buffering</a></td></tr>
+<tr><td style="text-align: left">[set_]left_want_[read/write]</td><td style="text-align: left">Does Left want to Read/Write ?</td><td style="text-align: left">State machine sets and runtime provides traffic based on the state machine "wants"</td></tr>
+</tbody></table>
+</div>
+<h3 id="blocking-left"><a class="header" href="#blocking-left">Blocking Left</a></h3>
+<p>Often it is desired to "block" the Left side in favor of processing only the Left side, e.g. in TLS negotiation before a layer can operate to transform the Cleartext (Right) traffic into Ciphertext (Left).</p>
+<p>For example within the yaoi runtime we stop the Left-to-Right processing at the layer which is blocked to ensure we have completed all the necessary negotiating required before advancing the layers on top, e.g. in the case of TLS to generate Cleartext traffic on top to be transformed into Ciphertext saving memory pressure through the use of intermediary layers and processing in case of failed TLS handshake/s.</p>
+<p>Blocking is different from "Readiness" that blocking can be set across the lifetime of the instanted orbit where as readiness is set only once.</p>
+<h2 id="runtime-impl-producer"><a class="header" href="#runtime-impl-producer">Runtime (impl Producer)</a></h2>
+<p>The <strong>Left</strong> side is implemented in the runtime to provide the correct buffering for both the I/O and intermediary layers.</p>
+<h2 id="state-machine-impl-consumer"><a class="header" href="#state-machine-impl-consumer">State Machine (impl Consumer)</a></h2>
+<p>State machine is provided an implementation of the instantiated Left side by the runtime.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="right-of-state-machines"><a class="header" href="#right-of-state-machines">Right of State Machines</a></h1>
+<p>The <strong>Right</strong> side of state machines can be thought as the I/O destination side, produced by the state machine/s and then consumed either by the other layers further through the chain or the final terminating App (for which it is typically then provided as it's Left side from the "below in the stack" Right side)</p>
+<p>As an example in the TLS, we use the Left side as the "Cleartext" side.</p>
+<h2 id="requirements--assumptions-1"><a class="header" href="#requirements--assumptions-1">Requirements / Assumptions</a></h2>
+<p>The following requirements / assumptions are currently made as of v0.1.0:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">fn</th><th style="text-align: left">Description</th><th style="text-align: left">Assumptions</th></tr></thead><tbody>
+<tr><td style="text-align: left">wants_right_next_in</td><td style="text-align: left">State machine wants Right input</td><td style="text-align: left">Runtime should provide Right side traffic as desired</td></tr>
+</tbody></table>
+</div>
+<h2 id="runtime-impl-producer-1"><a class="header" href="#runtime-impl-producer-1">Runtime (impl Producer)</a></h2>
+<p>Typically within the runtime the <strong>Right</strong> side is mirrored transparently as the Left side further Right in the blueprints.</p>
+<p>Runtimes should manage to keep sufficient intermediary buffering capability as desired by it's users that is first used as the Right side that then gets passed as Left in next cycle.</p>
+<h2 id="state-machine-impl-consumer-1"><a class="header" href="#state-machine-impl-consumer-1">State Machine (impl Consumer)</a></h2>
+<p>The isolation provides that state machines do not know anything about each other but the data is typically transformed forward through it's Right side, typically reflecting what the Left side was.</p>
+<p>State machine can generate it's Right side without the Left side, e.g. in various testing scenarios or when replaying recorded I/O.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="runtimes-overview"><a class="header" href="#runtimes-overview">Runtimes Overview</a></h1>
+<p>To provide common highest level denominator of portability within the yaws we've designated the individual "driver" runtimes to provide and ultimately own the I/O within it's own constraints capacity, security and performance profiles.</p>
+<p>For example the mechanics of handling I/O in a micro controller (no_std) can be very different than OS-enabled (or host-based) io_uring completion based I/O.</p>
+<p>Runtimes (or drivers) are intended to be the only differing part within the ecosystem to provide support within each given environment.</p>
+<p>Each runtime, as the ultimate owner and manager of the underlying I/O makes the necessary decisions to provide the appropriate buffering and the scheduling of advancing the blueprints within their given unique environments they operate in.</p>
+<p>Only the runtime makes the environment related decision/s e.g. threading (or not) etc. providing the highest level demoninator within the given runtime instead of the state machines having to make such tricky decisions and to add support separately that is provided by the runtime driver/s to operate within various environments and under their constraints.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="buffering"><a class="header" href="#buffering">Buffering</a></h1>
+<p>Given the runtimes effectively own the I/O they also own the buffering (and scheduling) mechanics.</p>
+<p>Typically runtimes are I/O driven and have to buffer not only the initial Left side but all the intermediary layers as well throughout the processing.</p>
+<p>Each runtime is responsible of both managing the I/O and providing the appropriate buffering towards each encountered layer, as described throiugh the underlying blueprints provided to the runtime by the user.</p>
+<p>As an example yaoi as an example provides various schemes of buffering depending on workloads, including incremental linux hugetable buffering greatly speeding up continuously streamed large payloads and so on.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="yaoi"><a class="header" href="#yaoi">YAOI</a></h1>
+<p>YAOI or Yer Another Output Input is the runtime for io_uring in YAWS.</p>
+<p>It provides host-based processing leveraging Linux io_uring, hugetable and provides several buffering schemes depending on the workloads it's serving.</p>
+<p>See the <a href="https://github.com/yaws-rs/yaoi/blob/main/examples/blueprint-tls-http/src/main.rs">example HTTPs pipeline</a> on how to use it.</p>
+<p>It is also the example provided on how to create a driver runtime for the yaws to support more environments and configurations.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="state-machines-overview"><a class="header" href="#state-machines-overview">State Machines Overview</a></h1>
+<p>yaws Layers (or State machines) run statefully typically to transform Left side into Right side in a chain of state machines.</p>
+<p>State machines don't know about each others existence and they can be processed as isolated stateful computation units independently and in parallel.</p>
+<p>Given the design characteristics state machines should store as little stateful information as possible and process the traffic in streaming fashion.</p>
+<p>Users typically instantiate running state machines as orbits through blueprints and then provide them to the runtime driver which advances all the chained state machines in the provided context.</p>
+<h2 id="known-blueprints"><a class="header" href="#known-blueprints">Known Blueprints</a></h2>
+<p>Source: <a href="https://github.com/yaws-rs/blueprint/blob/main/known/src/lib.rs">yaws-rs/blueprint/known</a></p>
+<p>Given the blueprints have to be typically constructed using same type, we provide a static enum dispatch of all the known blueprints to avoid dynamistic indirection.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tls"><a class="header" href="#tls">TLS</a></h1>
+<p>Source: <a href="https://github.com/yaws-rs/tls/tree/main/blueprint">yaws-rs/tls/blueprint</a>.</p>
+<p>User typically provides the TLS Layer configuration through it's context within the provided blueprints to the runtime driver.</p>
+<pre><code class="language-no_run">let tls_config_server =
+        TlsServerConfig::with_certs_and_key_file(Path::new(CA), Path::new(CERT), Path::new(KEY))
+            .unwrap();
+    let server_context =
+        blueprint_tls::TlsContext::Server(TlsServer::with_config(tls_config_server).unwrap());
+</code></pre>
+<p>The <strong>Left</strong> side of the state machine is used as the Ciphertext and <strong>Right</strong> side is the Cleartext side.</p>
+<p>The TLS state machine both handles the necessarily handshake and negotiation in the middle and then either encrypts the traffic from <strong>Right-to-Left</strong> or decrypts from <strong>Left-to-Right</strong>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="http11"><a class="header" href="#http11">HTTP/1.1</a></h1>
+<p>Source: <a href="https://github.com/yaws-rs/h11spec/tree/main/blueprint">github/yaws-rs/h11spec/blueprint</a></p>
+<p>Currently the HTTP/1.1 is an "App Layer" provided as the terminating layer.</p>
+<p>The HTTP state machine only takes the <strong>Left</strong> side and does not provide any transformation at the moment.</p>
+<p>In the future the HTTP state machine will provide transformation where the <strong>Right</strong> side can implement application functionality over HTTP.</p>
+<p>The HTTP state machine is designed to minimally parse the metadata for the sole processing of HTTP layer and will then pass the rest to the application on top.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>yaws io_uring abstracts the underlying low level Linux io_uring library.</p>
 <p>We aim to provide safer semantics towards managing all the moving parts given these have complex lifetimes and ownership, typically shared between the kernel, userspace and the user.</p>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - yaws</title>
+        <title>Right - yaws</title>
 
 
         <!-- Custom HTML head -->
@@ -152,32 +152,31 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>yaws io_uring abstracts the underlying low level Linux io_uring library.</p>
-<p>We aim to provide safer semantics towards managing all the moving parts given these have complex lifetimes and ownership, typically shared between the kernel, userspace and the user.</p>
-<p><img src="images/high_level.jpg" alt="high-level" /></p>
-<h2 id="bearer"><a class="header" href="#bearer">Bearer</a></h2>
-<p>UringBearer (io-uring-bearer) is the carrier holding all of the io_uring associated generated instances of types.</p>
-<h2 id="opcode"><a class="header" href="#opcode">OpCode</a></h2>
-<p>OpCode and OpCode (io-uring-opcode) are the contracts between bearer and individual opcode implementations.</p>
-<p>In addition it provides the required extension traits for implementing the individual opcodes.</p>
-<h2 id="ownership"><a class="header" href="#ownership">Ownership</a></h2>
-<p>Owner (io-uring-owner) provides the ownership semantics between kernel, userspace and the user.</p>
-<h2 id="filehandles"><a class="header" href="#filehandles">Filehandles</a></h2>
-<p>RegisteredFd and FdKind (io-uring-fd) provides the types representing filehandles within io_uring.</p>
-<h2 id="buffers"><a class="header" href="#buffers">Buffers</a></h2>
-<p>UringBuffer (io-uring-buffer) will provide the types representing buffers within io_uring.</p>
-<p><strong>Note</strong>: As of time writing buffers are still within the bearer but this will change.</p>
+                        <h1 id="right-of-state-machines"><a class="header" href="#right-of-state-machines">Right of State Machines</a></h1>
+<p>The <strong>Right</strong> side of state machines can be thought as the I/O destination side, produced by the state machine/s and then consumed either by the other layers further through the chain or the final terminating App (for which it is typically then provided as it's Left side from the "below in the stack" Right side)</p>
+<p>As an example in the TLS, we use the Left side as the "Cleartext" side.</p>
+<h2 id="requirements--assumptions"><a class="header" href="#requirements--assumptions">Requirements / Assumptions</a></h2>
+<p>The following requirements / assumptions are currently made as of v0.1.0:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">fn</th><th style="text-align: left">Description</th><th style="text-align: left">Assumptions</th></tr></thead><tbody>
+<tr><td style="text-align: left">wants_right_next_in</td><td style="text-align: left">State machine wants Right input</td><td style="text-align: left">Runtime should provide Right side traffic as desired</td></tr>
+</tbody></table>
+</div>
+<h2 id="runtime-impl-producer"><a class="header" href="#runtime-impl-producer">Runtime (impl Producer)</a></h2>
+<p>Typically within the runtime the <strong>Right</strong> side is mirrored transparently as the Left side further Right in the blueprints.</p>
+<p>Runtimes should manage to keep sufficient intermediary buffering capability as desired by it's users that is first used as the Right side that then gets passed as Left in next cycle.</p>
+<h2 id="state-machine-impl-consumer"><a class="header" href="#state-machine-impl-consumer">State Machine (impl Consumer)</a></h2>
+<p>The isolation provides that state machines do not know anything about each other but the data is typically transformed forward through it's Right side, typically reflecting what the Left side was.</p>
+<p>State machine can generate it's Right side without the Left side, e.g. in various testing scenarios or when replaying recorded I/O.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../protocols/h11spec.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../traits/left.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../io_uring/bearer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../runtimes/overview.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -187,11 +186,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../protocols/h11spec.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../traits/left.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../io_uring/bearer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../runtimes/overview.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
