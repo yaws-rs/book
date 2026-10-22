@@ -10,6 +10,4 @@ Yaws blueprints are designed to be used in either std or no_std as well as alloc
 
 ## Configuration
 
-See example on how a [HTTPS pipeline is configured](https://github.com/yaws-rs/yaoi/blob/main/examples/blueprint-tls-http/src/main.rs#L39) which is [then injected](https://github.com/yaws-rs/yaoi/blob/main/examples/blueprint-tls-http/src/main.rs#L59) for the instantiated client/server contextes that bring together chained blueorints.
-
 Each protocol or app take either default configuration or with_configuration upon instantiation into a running set of chained Orbit.

@@ -153,9 +153,9 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="cryptography"><a class="header" href="#cryptography">Cryptography</a></h1>
-<p>yaws HTTP-TLS uses rustls &gt;0.23 behind the scenes.</p>
-<p>It can be configured to various providers implementing CryptoProvider.</p>
-<p>Downstream user does not need to be concerned of the TLS implementation detail.</p>
+<p>yaws TLS uses either rustls &gt;0.23 or yTLS behind the scenes.</p>
+<p>Typically rustls would be used in most cases but in no_std + no_alloc you can use yTLS.</p>
+<p>See more at <a href="https://github.com/yaws-rs/tls">yaws/tls</a>.</p>
 
                     </main>
 

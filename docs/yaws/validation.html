@@ -153,12 +153,17 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="validation"><a class="header" href="#validation">Validation</a></h1>
-<p>yaws Validation consists of the below:</p>
+<p>Each state machine (or blueprint / instantiated orbit) is validated.</p>
+<p>Stata machinery consists of the below:</p>
 <ul>
-<li>HTTP Protocol conformance against h1, h2 and h3 specs.</li>
-<li>HTTP-TLS conformance</li>
+<li>TLS Blueprints at <a href="https://github.com/yaws-rs/tls/tree/main/test_ab">yaws/tls</a></li>
+<li>HTTP+App relevant Behavior at <a href="https://github.com/yaws-rs/h11spec/tree/main/test_bp">yaws/h11spec</a></li>
 </ul>
 <p>Given yaws is organized around it's traits, we validate all the implementations through the trait implementations requiring no I/O.</p>
+<h2 id="roadmap"><a class="header" href="#roadmap">Roadmap</a></h2>
+<p>Given the state machinery is isolated composable units we are be able to derive downstream stack test cases from upstream protocols.</p>
+<p>i.e. HTTP requests can turn into TLS test cases when chained with TLS state machinery.</p>
+<p>Performance testing can be done in isolated state machine units as well as in integrated composed form.</p>
 
                     </main>
 

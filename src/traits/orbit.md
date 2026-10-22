@@ -2,9 +2,7 @@
 
 Yaws Orbits are the instantiated state machines from set of blueprints typically run as "pipelines" with the given set of external I/O.
 
-All Orbits are advanced using [Left] and [Right] traits.
-
-See example Orbit implementation [advancing the TLS state machine](https://github.com/yaws-rs/tls/blob/main/blueprint/src/tls_blueprints.rs#L20) which advances either the client or server TLS contextes.
+All Orbits are advanced using [Left](./traits/left.md) and [Right](./traits/right.md) traits.
 
 Within each blueprint composition there must be at least one App layer with the intermediate Layers being optional.
 

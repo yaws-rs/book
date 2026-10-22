@@ -163,38 +163,50 @@
 <p>yaws is driven through it's traits by providing implementation of Input and Output.</p>
 <p><img src="yaws/./images/yaws_io_trait.jpg" alt="yaws io trait" /></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="flavors"><a class="header" href="#flavors">Flavors</a></h1>
-<p>yaws reference runtime implementations are called flavors.</p>
-<p>yaws provides initially the reference runtimes or flavors for:</p>
+<p>YAWS calls it's environment / runtime integrations as flavors.</p>
+<p>Given the aim of YAWS is to make it easier and have harmonious capability where only the runtime and I/O changes.</p>
+<p>We provide them as examples given YAWS is aimed for multitude of uses in diverse varying environments with different needs.</p>
+<h2 id="yaoi"><a class="header" href="#yaoi">YAOI</a></h2>
+<p>YAOI or <em>Y</em>et <em>A</em>nother <em>O</em>utput and <em>I</em>nput is provided as an Linux io_uring example.</p>
+<p>See full <a href="https://github.com/yaws-rs/yaoi/tree/main/examples/blueprint-tls-http">YAOI HTTPS example here</a>.</p>
+<p>More information about YAOI:</p>
 <ul>
-<li>Lunatic Rust+Erlang+WebAssembly Guest-side</li>
-<li>io_uring Linux io_uring Completion Host-side</li>
+<li><a href="https://github.com/yaws-rs/yaoi">GitHub</a></li>
+<li><a href="https://docs.rs/yaoi/latest/yaoi/">docs.rs</a></li>
 </ul>
-<h1 id="binary-runtime"><a class="header" href="#binary-runtime">Binary Runtime</a></h1>
-<p>User can run any of the flavors directly as binary through <code>cfg(yaws_flavor)</code>.</p>
-<p>This cfg can be either supplied through <code>.cargo/config.toml</code> or through <code>--cfg</code> via the top-level binary.</p>
-<h2 id="io_uring-binary"><a class="header" href="#io_uring-binary">io_uring Binary</a></h2>
-<pre><code>$ RUSTFLAGS="--cfg yaws_flavor=\"io_uring\"" cargo run --bin yaws
-</code></pre>
-<h2 id="lunatic-binary"><a class="header" href="#lunatic-binary">Lunatic Binary</a></h2>
-<pre><code>$ RUSTFLAGS="--cfg yaws_flavor=\"lunatic\"" cargo run --bin yaws --target wasm32-wasi
-</code></pre>
-<h1 id="library-driver"><a class="header" href="#library-driver">Library Driver</a></h1>
-<p>User can implement the I/O traits in conjuction with the abstract machines implementing HTTP.</p>
+<h2 id="embassy"><a class="header" href="#embassy">Embassy</a></h2>
+<p>See full <a href="https://github.com/yaws-rs/embassy">Embassy HTTPS example here</a>.</p>
+<p>More information about Embassy:</p>
+<ul>
+<li><a href="https://embassy.dev/">Website</a></li>
+<li><a href="https://github.com/embassy-rs/">GitHub</a></li>
+<li><a href="https://docs.embassy.dev/">Docs</a></li>
+</ul>
+<h2 id="more"><a class="header" href="#more">More</a></h2>
+<p>If you would look forward to more runtime integrations or know one we haven't listed here.</p>
+<p>Raise an issue at <a href="https://github.com/yaws-rs/yaws">yaws/yaws repository</a> about it.</p>
+<h2 id="library-driver"><a class="header" href="#library-driver">Library Driver</a></h2>
+<p>User can also implement the I/O traits in conjuction with the abstract machines implementing HTTP.</p>
 <p>Refer to the API documentation or see the existing reference runtimes or flavors for examples.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="validation"><a class="header" href="#validation">Validation</a></h1>
-<p>yaws Validation consists of the below:</p>
+<p>Each state machine (or blueprint / instantiated orbit) is validated.</p>
+<p>Stata machinery consists of the below:</p>
 <ul>
-<li>HTTP Protocol conformance against h1, h2 and h3 specs.</li>
-<li>HTTP-TLS conformance</li>
+<li>TLS Blueprints at <a href="https://github.com/yaws-rs/tls/tree/main/test_ab">yaws/tls</a></li>
+<li>HTTP+App relevant Behavior at <a href="https://github.com/yaws-rs/h11spec/tree/main/test_bp">yaws/h11spec</a></li>
 </ul>
 <p>Given yaws is organized around it's traits, we validate all the implementations through the trait implementations requiring no I/O.</p>
+<h2 id="roadmap"><a class="header" href="#roadmap">Roadmap</a></h2>
+<p>Given the state machinery is isolated composable units we are be able to derive downstream stack test cases from upstream protocols.</p>
+<p>i.e. HTTP requests can turn into TLS test cases when chained with TLS state machinery.</p>
+<p>Performance testing can be done in isolated state machine units as well as in integrated composed form.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="security"><a class="header" href="#security">Security</a></h1>
 <h2 id="supported-versions"><a class="header" href="#supported-versions">Supported Versions</a></h2>
 <p>We, as the yaws maintainers, strive to support all previous versions of yaws unless declared End-of-Life.</p>
 <p>Typically -1 major SemVer versions are to be supported at very least when stable.</p>
 <p>Unstable versions prior to the stable major 1 are to be supported through -2 minor releases.</p>
 <h2 id="reporting"><a class="header" href="#reporting">Reporting</a></h2>
-<p>Please contribute security related issues by e-mail to security@TBD prior to any disclosure.</p>
+<p>Please contribute security related issues by [TBD] prior to any disclosure.</p>
 <p>We ask that contributors give us maintainers a reasonable time to address any issues.</p>
 <p>Maintainers will work collaboratively with any contributor/s in order to verify and fix any encountered issues.</p>
 <p>Contributors are not required to write a PoC or a fix.</p>
@@ -208,11 +220,12 @@
 <li>min+avg+max latency</li>
 <li>Protocol I/O less performance</li>
 <li>HTTP-TLS</li>
+<li>App based performance</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cryptography"><a class="header" href="#cryptography">Cryptography</a></h1>
-<p>yaws HTTP-TLS uses rustls &gt;0.23 behind the scenes.</p>
-<p>It can be configured to various providers implementing CryptoProvider.</p>
-<p>Downstream user does not need to be concerned of the TLS implementation detail.</p>
+<p>yaws TLS uses either rustls &gt;0.23 or yTLS behind the scenes.</p>
+<p>Typically rustls would be used in most cases but in no_std + no_alloc you can use yTLS.</p>
+<p>See more at <a href="https://github.com/yaws-rs/tls">yaws/tls</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="yaws-sans-io-overview"><a class="header" href="#yaws-sans-io-overview">Yaws Sans-I/O Overview</a></h1>
 <p>Yaws de-couples all the I/O from the rest of the state machine with the follwing set of traits with differing set of implementors.</p>
 <p>The below traits are intended to be implemented by both the state machines &amp; runtimes.</p>
@@ -232,12 +245,10 @@
 <p>A static collection of configured BluePrint is typically injected through runtime for each accepted or connected TCP Client.</p>
 <p>Yaws blueprints are designed to be used in either std or no_std as well as alloc-optional environments.</p>
 <h2 id="configuration"><a class="header" href="#configuration">Configuration</a></h2>
-<p>See example on how a <a href="https://github.com/yaws-rs/yaoi/blob/main/examples/blueprint-tls-http/src/main.rs#L39">HTTPS pipeline is configured</a> which is <a href="https://github.com/yaws-rs/yaoi/blob/main/examples/blueprint-tls-http/src/main.rs#L59">then injected</a> for the instantiated client/server contextes that bring together chained blueorints.</p>
 <p>Each protocol or app take either default configuration or with_configuration upon instantiation into a running set of chained Orbit.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="yaws-orbit"><a class="header" href="#yaws-orbit">Yaws Orbit</a></h1>
 <p>Yaws Orbits are the instantiated state machines from set of blueprints typically run as "pipelines" with the given set of external I/O.</p>
-<p>All Orbits are advanced using [Left] and [Right] traits.</p>
-<p>See example Orbit implementation <a href="https://github.com/yaws-rs/tls/blob/main/blueprint/src/tls_blueprints.rs#L20">advancing the TLS state machine</a> which advances either the client or server TLS contextes.</p>
+<p>All Orbits are advanced using <a href="traits/./traits/left.html">Left</a> and <a href="traits/./traits/right.html">Right</a> traits.</p>
 <p>Within each blueprint composition there must be at least one App layer with the intermediate Layers being optional.</p>
 <p>Within the runtime, each runtime makes the decision/s on how to process all the intermediate layers as well as the terminating layers given each runtime is expected to have it's unique I/O characteristics.</p>
 <p>Typically all the runtimes first processes the raw I/O all the way from Left to Right (as input) and then secondly provides the final summary (or reduced output) from all the chained state machines through back into the I/O layer, essentially advancing first from Left to Right for input and then from Right to Left for the final output.</p>
@@ -310,22 +321,6 @@ listener
 <h2 id="state-machine-impl-consumer-1"><a class="header" href="#state-machine-impl-consumer-1">State Machine (impl Consumer)</a></h2>
 <p>The isolation provides that state machines do not know anything about each other but the data is typically transformed forward through it's Right side, typically reflecting what the Left side was.</p>
 <p>State machine can generate it's Right side without the Left side, e.g. in various testing scenarios or when replaying recorded I/O.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="runtimes-overview"><a class="header" href="#runtimes-overview">Runtimes Overview</a></h1>
-<p>To provide common highest level denominator of portability within the yaws we've designated the individual "driver" runtimes to provide and ultimately own the I/O within it's own constraints capacity, security and performance profiles.</p>
-<p>For example the mechanics of handling I/O in a micro controller (no_std) can be very different than OS-enabled (or host-based) io_uring completion based I/O.</p>
-<p>Runtimes (or drivers) are intended to be the only differing part within the ecosystem to provide support within each given environment.</p>
-<p>Each runtime, as the ultimate owner and manager of the underlying I/O makes the necessary decisions to provide the appropriate buffering and the scheduling of advancing the blueprints within their given unique environments they operate in.</p>
-<p>Only the runtime makes the environment related decision/s e.g. threading (or not) etc. providing the highest level demoninator within the given runtime instead of the state machines having to make such tricky decisions and to add support separately that is provided by the runtime driver/s to operate within various environments and under their constraints.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="buffering"><a class="header" href="#buffering">Buffering</a></h1>
-<p>Given the runtimes effectively own the I/O they also own the buffering (and scheduling) mechanics.</p>
-<p>Typically runtimes are I/O driven and have to buffer not only the initial Left side but all the intermediary layers as well throughout the processing.</p>
-<p>Each runtime is responsible of both managing the I/O and providing the appropriate buffering towards each encountered layer, as described throiugh the underlying blueprints provided to the runtime by the user.</p>
-<p>As an example yaoi as an example provides various schemes of buffering depending on workloads, including incremental linux hugetable buffering greatly speeding up continuously streamed large payloads and so on.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="yaoi"><a class="header" href="#yaoi">YAOI</a></h1>
-<p>YAOI or Yer Another Output Input is the runtime for io_uring in YAWS.</p>
-<p>It provides host-based processing leveraging Linux io_uring, hugetable and provides several buffering schemes depending on the workloads it's serving.</p>
-<p>See the <a href="https://github.com/yaws-rs/yaoi/blob/main/examples/blueprint-tls-http/src/main.rs">example HTTPs pipeline</a> on how to use it.</p>
-<p>It is also the example provided on how to create a driver runtime for the yaws to support more environments and configurations.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="state-machines-overview"><a class="header" href="#state-machines-overview">State Machines Overview</a></h1>
 <p>yaws Layers (or State machines) run statefully typically to transform Left side into Right side in a chain of state machines.</p>
 <p>State machines don't know about each others existence and they can be processed as isolated stateful computation units independently and in parallel.</p>
@@ -335,226 +330,38 @@ listener
 <p>Source: <a href="https://github.com/yaws-rs/blueprint/blob/main/known/src/lib.rs">yaws-rs/blueprint/known</a></p>
 <p>Given the blueprints have to be typically constructed using same type, we provide a static enum dispatch of all the known blueprints to avoid dynamistic indirection.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="tls"><a class="header" href="#tls">TLS</a></h1>
-<p>Source: <a href="https://github.com/yaws-rs/tls/tree/main/blueprint">yaws-rs/tls/blueprint</a>.</p>
+<p>Source: <a href="https://github.com/yaws-rs/tls">yaws-rs/tls</a>.</p>
 <p>User typically provides the TLS Layer configuration through it's context within the provided blueprints to the runtime driver.</p>
-<pre><code class="language-no_run">let tls_config_server =
-        TlsServerConfig::with_certs_and_key_file(Path::new(CA), Path::new(CERT), Path::new(KEY))
-            .unwrap();
-    let server_context =
-        blueprint_tls::TlsContext::Server(TlsServer::with_config(tls_config_server).unwrap());
-</code></pre>
 <p>The <strong>Left</strong> side of the state machine is used as the Ciphertext and <strong>Right</strong> side is the Cleartext side.</p>
 <p>The TLS state machine both handles the necessarily handshake and negotiation in the middle and then either encrypts the traffic from <strong>Right-to-Left</strong> or decrypts from <strong>Left-to-Right</strong>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="http11"><a class="header" href="#http11">HTTP/1.1</a></h1>
-<p>Source: <a href="https://github.com/yaws-rs/h11spec/tree/main/blueprint">github/yaws-rs/h11spec/blueprint</a></p>
+<p>Source: <a href="https://github.com/yaws-rs/h11spec">yaws-rs/h11spec</a></p>
 <p>Currently the HTTP/1.1 is an "App Layer" provided as the terminating layer.</p>
-<p>The HTTP state machine only takes the <strong>Left</strong> side and does not provide any transformation at the moment.</p>
+<p>The HTTP state machine only takes the <strong>Left</strong> side and does not provide any transformation into the <strong>Right</strong> at the moment.</p>
 <p>In the future the HTTP state machine will provide transformation where the <strong>Right</strong> side can implement application functionality over HTTP.</p>
-<p>The HTTP state machine is designed to minimally parse the metadata for the sole processing of HTTP layer and will then pass the rest to the application on top.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>yaws io_uring abstracts the underlying low level Linux io_uring library.</p>
-<p>We aim to provide safer semantics towards managing all the moving parts given these have complex lifetimes and ownership, typically shared between the kernel, userspace and the user.</p>
-<p><img src="io_uring/images/high_level.jpg" alt="high-level" /></p>
-<h2 id="bearer"><a class="header" href="#bearer">Bearer</a></h2>
-<p>UringBearer (io-uring-bearer) is the carrier holding all of the io_uring associated generated instances of types.</p>
-<h2 id="opcode"><a class="header" href="#opcode">OpCode</a></h2>
-<p>OpCode and OpCode (io-uring-opcode) are the contracts between bearer and individual opcode implementations.</p>
-<p>In addition it provides the required extension traits for implementing the individual opcodes.</p>
-<h2 id="ownership"><a class="header" href="#ownership">Ownership</a></h2>
-<p>Owner (io-uring-owner) provides the ownership semantics between kernel, userspace and the user.</p>
-<h2 id="filehandles"><a class="header" href="#filehandles">Filehandles</a></h2>
-<p>RegisteredFd and FdKind (io-uring-fd) provides the types representing filehandles within io_uring.</p>
-<h2 id="buffers"><a class="header" href="#buffers">Buffers</a></h2>
-<p>UringBuffer (io-uring-buffer) will provide the types representing buffers within io_uring.</p>
-<p><strong>Note</strong>: As of time writing buffers are still within the bearer but this will change.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="bearer-1"><a class="header" href="#bearer-1">Bearer</a></h1>
-<p>The crate io-uring-bearer consists of the below main types:</p>
-<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Type</th><th style="text-align: left">Description</th></tr></thead><tbody>
-<tr><td style="text-align: left"><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html">UringBearer</a></td><td style="text-align: left">The main carrier type holding all the instaces of Completion, Registered Filehandles &amp; Buffers</td></tr>
-<tr><td style="text-align: left"><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/error/enum.UringBearerError.html">UringBearerError</a></td><td style="text-align: left">The error type for UringBearer</td></tr>
-<tr><td style="text-align: left"><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.BearerCapacityKind.html">BearerCapacityKind</a></td><td style="text-align: left">Descriptor used to describe the boundaries of capacities required</td></tr>
-<tr><td style="text-align: left"><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html">Completion</a></td><td style="text-align: left">The main completion type bringing together all the possible competions</td></tr>
-</tbody></table>
-</div>
-<h2 id="associated-built-in-types"><a class="header" href="#associated-built-in-types">Associated Built-In Types</a></h2>
-<p>The below will be migrated into separate crates, implementing the io-uring-opcode trait later, similar to EpollCtl.</p>
-<p>Until then, io-uring-bearer still holds some of the required holding types:</p>
-<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Holding Type</th><th style="text-align: left">Description</th></tr></thead><tbody>
-<tr><td style="text-align: left"><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.BuffersRec.html">BuffersRec</a></td><td style="text-align: left">Holds the actual allocation for the Buffers that either owned by the Kernel or Userspace.</td></tr>
-<tr><td style="text-align: left"><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/enum.FutexRec.html">FutexRec</a></td><td style="text-align: left">futex2(2) -like, Used for FutexWait</td></tr>
-</tbody></table>
-</div>
-<p>In addition io-uring-bearer still holds some of the individual OpCode Pending / Completion slab types:</p>
-<div class="table-wrapper"><table><thead><tr><th style="text-align: left">OpCode Type</th><th style="text-align: left">Description</th></tr></thead><tbody>
-<tr><td style="text-align: left"><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/enum.AcceptRec.html">AcceptRec</a></td><td style="text-align: left">accept4(2), used for Accept and AcceptMulti</td></tr>
-<tr><td style="text-align: left"><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.FutexWaitRec.html">FutexWaitRec</a></td><td style="text-align: left">Represents FutexWait</td></tr>
-<tr><td style="text-align: left"><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.RecvRec.html">RecvRec</a></td><td style="text-align: left">Represents Recv</td></tr>
-<tr><td style="text-align: left"><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.RecvMultiRec.html">RecvMultiRec</a></td><td style="text-align: left">Represents RecvMulti</td></tr>
-<tr><td style="text-align: left"><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/enum.SendZcRec.html">SendZcRec</a></td><td style="text-align: left">Represents SendZc</td></tr>
-</tbody></table>
-</div><div style="break-before: page; page-break-before: always;"></div><h1 id="capacity"><a class="header" href="#capacity">Capacity</a></h1>
-<p><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html">UringBearer</a> requires bounded capacities described to it.</p>
-<p>Leaving things unbounded and without any capacity planning, it would be easy to create opportunities for denial of service, crashes etc. resulting from unbounded capacities at runtime.</p>
-<p>All consumers must describe the required capacities through <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.BearerCapacityKind.html">BearerCapacityKind</a> type.</p>
-<p>Given that the capacity is described and used at runtime context,</p>
-<p>You should test your intended runtime with the described capacity to ensure that the given environment meets it where ever it's deployed in.</p>
-<p>Anything that hits the capacity will typically see <a href="https://docs.rs/slabbable/latest/slabbable/enum.SlabbableError.html">SlabbableError</a> <code>AtCapacity(setting)</code> variant.</p>
-<p>The capacity values are only used when the UringBearer is constructed and are not changeable within it's lifetime after.</p>
-<p>See the <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.BearerCapacityKind.html">BearerCapacityKind</a> for an example how to use it along the <a href="https://docs.rs/capacity/latest/capacity/">capacity</a> crate.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="slabbable"><a class="header" href="#slabbable">Slabbable</a></h1>
-<p>See <a href="https://github.com/pinkforest/pinkforest/blob/main/2025-01-25-slabbable.md">blog</a> which describes the <a href="https://docs.rs/slabbable/latest/slabbable/trait.Slabbable.html">Slabbable</a> trait in general.</p>
-<p>Normal Vec etc. would implicitly allocate without warning and invalidate the underlying addresses.</p>
-<p>Given that memory addresses need to be kept stable for many things submitted to the io_uring queue,</p>
-<p><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html">UringBearer</a> uses <a href="https://docs.rs/slabbable/latest/slabbable/trait.Slabbable.html">Slabbable</a> to back the underlying pending or completed instances of <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html">Completion</a>.</p>
-<p>Any top-level binary can configure the desired Slabbable implementation through <a href="https://docs.rs/slabbable-impl-selector/latest/slabbable_impl_selector/">SelectedSlab</a>.</p>
-<p>By default the crate currently uses nohash-hasher through HashBrown through <a href="https://docs.rs/slabbable-hash/latest/slabbable_hash/">slabbable-hash</a>.</p>
-<h2 id="completions"><a class="header" href="#completions">Completions</a></h2>
-<p>We exploit the fact that Kernel doesn't make any opinion what the userdata should contain for the pending completions by giving each submission a rotating u64 identifier which can then be mapped into the completed type upon completion.</p>
-<p>This avoids using any from_raw_parts -like re-construction when we can refer through rotating u64 serial through storage.</p>
-<p>We could also use <a href="https://doc.rust-lang.org/std/mem/fn.forget.html">std::mem::forget</a> but we can also model this through the trait giving the option to the user what kind of storage they would like.</p>
-<p>Main reason we like to track the items is we that can have some level of ownership / pointer provenance, manage easily any associated data (e.g. regarding the ownership) and more importantly we can construct a gated accessor / barrier to it whilst when for example the kernel has only immutable reference to the said data meaning we can also hold immutable references whilst doing so where as simply forgetting the submitted data.</p>
-<p>Not only this but sometimes you might have an arena of buffers (e.g. group of buffers) that are provided to kernel and you must handle the ownership status of window / slice into the part of group of continuous buffers that have been provided back essentially fragmenting the type in some scenarios.</p>
-<p>In short, the trait gives us the flexibility and we are able to test that all the implementations uphold the guarantees whilst leaving us easy way to benchmark any possible scenarios through the varying implementation in one go.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="opcode-1"><a class="header" href="#opcode-1">OpCode</a></h1>
-<p>All io_uring operations or ops are described through their opcodes.</p>
-<p>The below opcodes are currently implemented:</p>
-<div class="table-wrapper"><table><thead><tr><th style="text-align: left">OpCode</th><th style="text-align: left">Linux Kernel</th><th style="text-align: left">trait / built-in</th><th style="text-align: left">Description</th></tr></thead><tbody>
-<tr><td style="text-align: left">Accept</td><td style="text-align: left"></td><td style="text-align: left">built-in</td><td style="text-align: left">accept4(2) (single-shot)</td></tr>
-<tr><td style="text-align: left">EpollCtl</td><td style="text-align: left"></td><td style="text-align: left">trait impl</td><td style="text-align: left">Epoll Control</td></tr>
-<tr><td style="text-align: left">FuteXWait</td><td style="text-align: left"></td><td style="text-align: left">built-in</td><td style="text-align: left">Futex Wait</td></tr>
-<tr><td style="text-align: left">ProvideBuffers</td><td style="text-align: left"></td><td style="text-align: left">built-in</td><td style="text-align: left">Register Buffers with Kernel for faster I/O</td></tr>
-<tr><td style="text-align: left">Recv</td><td style="text-align: left"></td><td style="text-align: left">built-in</td><td style="text-align: left">Receive (single-shot)</td></tr>
-<tr><td style="text-align: left">RecvMulti</td><td style="text-align: left"></td><td style="text-align: left">built-in</td><td style="text-align: left">Receive (multi-shot)</td></tr>
-<tr><td style="text-align: left">SendZc</td><td style="text-align: left"></td><td style="text-align: left">built-in</td><td style="text-align: left">Send (Zero Copy)</td></tr>
-</tbody></table>
-</div>
-<p>All the in-Bearer built-in OpCodes will be moved to implement the associated <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/">trait</a> in the future.</p>
-<p>All the builti-in &amp; OpCode<C> + OpCompletion <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/">trait</a> impls are mapped into <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html">Completion</a> enum.</p>
-<p>To push a bearer-aware submission, use the push_* or push_op_typed methods via the associated <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html">UringBearer</a>.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="accept"><a class="header" href="#accept">Accept</a></h1>
-<p>Accept abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.Accept.html">io_uring::opcode::Accept</a>.</p>
-<p>This Single-shot Accept provides the source socket address and port within the completion.</p>
-<p>If you either don't need the source address and / or port, consider using the AcceptMulti instead.</p>
-<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
-<h2 id="submission"><a class="header" href="#submission">Submission</a></h2>
-<p>You can currently push single-shot Accept unsafely depending on whether the underlying TcpListener RawFd is IPv4 or IPv6:</p>
+<p>The application on top injected through the HTTP/1.1 state machine provides the instrumentation on how to respond to every request.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="application"><a class="header" href="#application">Application</a></h1>
+<p>Application layer is injected on top of the terminating protocol layer.</p>
+<p>Currently we have application layer implementations over H11spec (HTTP/1.1)</p>
+<h2 id="http11-application"><a class="header" href="#http11-application">HTTP/1.1 Application</a></h2>
+<p>The application typically implements the below traits found from <a href="https://docs.rs/h11types">h11types</a> crate:</p>
+<p>To receive a HTTP/1.1 Request:</p>
 <ul>
-<li>IPv4: <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_accept_ipv4">UringBearer::add_accept_ipv4</a></li>
-<li>IPv6: <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_accept_ipv6">UringBearer::add_accept_ipv6</a></li>
+<li><a href="https://docs.rs/h11types/latest/h11types/trait.RequestReceiver.html">RequestReceiver</a> to receive Metadata</li>
+<li><a href="https://docs.rs/h11types/latest/h11types/trait.HeaderReceiver.html">HeaderReceiver</a> to receive Headers</li>
+<li><a href="https://docs.rs/h11types/latest/h11types/trait.RequestBodyReceiver.html">RequestBodyReceiver</a> to receive Body</li>
+<li><a href="https://docs.rs/h11types/latest/h11types/trait.RequestTargetReceiver.html">TargetReceiver</a> to receive Target URI</li>
 </ul>
-<p>To use it safely, user must ensure that the underlying socket is either exclusively IPv4 or IPv6 given the returned source address and structure layout is different depending on which one it is.</p>
-<p>If someone needs UNIX sockets, please feel free to <a href="https://github.com/yaws-rs/io_uring-utils">send a PR</a>.</p>
-<h2 id="completion"><a class="header" href="#completion">Completion</a></h2>
-<p>Accept(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/enum.AcceptRec.html">AcceptRec</a>) will show up as normal through the handler API through <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html">UringBearer</a>.</p>
-<h2 id="lifetime-manual-handling"><a class="header" href="#lifetime-manual-handling">Lifetime (Manual handling)</a></h2>
-<p><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/completion/enum.SubmissionRecordStatus.html">SubmissionRecordStatus::Forget</a> is safe given the pending Completion was Single-shot.</p>
-<p>If the completed record is retained, this will result in memoryleak.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="epollctl"><a class="header" href="#epollctl">EpollCtl</a></h1>
-<p>EpollCtl abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.EpollCtl.html">io_uring::opcode::EpollCtl</a>.</p>
-<p>You can use io_uring to batch the control calls of Epoll.</p>
-<p>For now the separate <a href="https://docs/io-uring-epoll">io-uring-epoll</a> crate also provides a convenient syscall abstraction into epoll_wait which is not yet available through the io_uring interaface over a regular syscall as of now.</p>
-<p>If you have millions of sockets that constantly change status, it is helpful to be able to batch the control calls.</p>
-<p>See the <a href="https://github.com/yaws-rs/io_uring-utils/tree/main/io-uring-epoll/examples">examples</a> from the io-uring-epoll repository.</p>
-<p><strong>Note</strong>: io-uring-epoll 0.1 crate is different to 0.2 which implements the new OpCode/Completion traits.</p>
-<h2 id="construct"><a class="header" href="#construct">Construct</a></h2>
+<p>And to provide a response to the received request:</p>
 <ul>
-<li>Construct associated <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.EpollCtl.html#method.with_epfd_handled">EpollUringHandler::with_bearer(UringBearer)</a>.</li>
-<li>Construct <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.HandledFd.html">HandledFd</a> representing individual Epoll triggered RawFd</li>
+<li><a href="https://docs.rs/h11types/latest/h11types/trait.ResponseSender.html">ResponseSender</a> to send a Response</li>
 </ul>
-<h2 id="submission-1"><a class="header" href="#submission-1">Submission</a></h2>
+<p>Example HTTP/1.1 Applications:</p>
 <ul>
-<li>Construct <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.EpollCtl.html#method.with_epfd_handled">EpollCtl::with_epfd_handled(epfd, handle_fd, your_reference)</a></li>
-<li>Use <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.push_epoll_ctl">UringBearer::push_epoll_ctl</a> to push the constructed EpollCtl as submission.</li>
+<li><a href="https://github.com/yaws-rs/h11spec/tree/main/apps/rick_roll">Rick-Roll</a> to send every request a Rick-Roll / payload</li>
+<li><a href="https://github.com/yaws-rs/h11spec/tree/main/apps/mirror">Mirror</a> to send post back to sender</li>
 </ul>
-<h2 id="completion-1"><a class="header" href="#completion-1">Completion</a></h2>
-<p>EpollCtl(impl <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpExtEpollCtl.html">OpExtEpollCtl</a>) will show up as normal through the handler API through UringBearer.</p>
-<h2 id="lifetime-manual-handling-1"><a class="header" href="#lifetime-manual-handling-1">Lifetime (Manual handling)</a></h2>
-<p>You should only Forget the underlying EpollCtl when the RawFd is removed from monitored filehandles list.</p>
-<p>Failing to Retain the underlying EpollCtl before removing it will result in undefined behaviour.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="futexwait"><a class="header" href="#futexwait">FutexWait</a></h1>
-<p>FutexWait abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.FutexWait.html">io_uring::opcode::FutexWait</a>.</p>
-<p>This can be used, among other use-cases, to combine epoll_wait or other events waiting on another thread with io_uring completions given atomics can be used to generate completion events through FutexWait.</p>
-<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
-<h2 id="construct-1"><a class="header" href="#construct-1">Construct</a></h2>
-<p>You can create the underlying indexed AtomicU32 which will be owned by the UringBearer through:</p>
-<ul>
-<li><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.create_futex_atomic">UringBearer::create_futex_atomic</a></li>
-</ul>
-<p>Alternatively and unsafely you can provide your own AtomicU32 to UringBearer through:</p>
-<ul>
-<li><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.supply_futex_atomic_raw">UringBearer::supply_futex_atomic_raw</a></li>
-</ul>
-<h2 id="submission-2"><a class="header" href="#submission-2">Submission</a></h2>
-<p>You can submit a FutexWait through <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_futex_wait">UringBearer::add_futex_wait</a>.</p>
-<h2 id="completion-2"><a class="header" href="#completion-2">Completion</a></h2>
-<p>FutexWait(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.FutexWaitRec.html">FutexWaitRec</a>) will show up as normal through the handler API through UringBearer.</p>
-<h2 id="lifetime-manual-handling-2"><a class="header" href="#lifetime-manual-handling-2">Lifetime (Manual handling)</a></h2>
-<p>SubmissionRecordStatus::Forget is safe given the pending Completion was Single-shot.</p>
-<p>If the completed record is retained, this will result in memoryleak.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="providebuffers"><a class="header" href="#providebuffers">ProvideBuffers</a></h1>
-<p>ProvideBuffers abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.ProvideBuffers.html">io_uring::opcode::ProvideBuffers</a>.</p>
-<p>To do faster I/O it is essential to register (or map) any userspace buffers with the kernel so the kernel can spend less time mapping the userspace buffers between the Recv / Send calls.</p>
-<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
-<h2 id="construct-2"><a class="header" href="#construct-2">Construct</a></h2>
-<p>See the main section about <a href="io_uring/opcode/../buffers.html">Buffers</a> how to manage these.</p>
-<h2 id="submission-3"><a class="header" href="#submission-3">Submission</a></h2>
-<p>Use the <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.provide_buffers">UringBearer::provide_buffers</a> to both submit and associate any created <a href="io_uring/opcode/../buffers.html">Buffers</a> with kernel-mapped identifiers.</p>
-<p>We may later have API to make this more easier to use but for now the user must keep track of the kernel-mapped identifiers.</p>
-<h2 id="completion-3"><a class="header" href="#completion-3">Completion</a></h2>
-<p>ProvideBuffers(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.ProvideBuffersRec.html">ProvideBuffersRec</a>) is provided normally through the handler API via UringBearer.</p>
-<h2 id="lifetime-manual-handling-3"><a class="header" href="#lifetime-manual-handling-3">Lifetime (Manual handling)</a></h2>
-<p>The actual buffers are separate from the registering it so the submission can be forgotten after completion safely.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="recv"><a class="header" href="#recv">Recv</a></h1>
-<p>Single-shot Recv abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.Recv.html">io_uring::opcode::Recv</a>.</p>
-<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
-<h2 id="construct-3"><a class="header" href="#construct-3">Construct</a></h2>
-<p>Recv requires a registered filehandle and previously created indexed buffer.</p>
-<h2 id="submission-4"><a class="header" href="#submission-4">Submission</a></h2>
-<p>Use <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_recv">UringBearer::add_recv</a> to submit a Single-shot Recv to kernel.</p>
-<h2 id="completion-4"><a class="header" href="#completion-4">Completion</a></h2>
-<p>Recv(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.RecvRec.html">RecvRec</a>) is provided normally through the handler API via UringBearer.</p>
-<h2 id="lifetime-manual-handling-4"><a class="header" href="#lifetime-manual-handling-4">Lifetime (Manual handling)</a></h2>
-<p><a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/completion/enum.SubmissionRecordStatus.html">SubmissionRecordStatus::Forget</a> is safe given the pending Completion was Single-shot.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="recvmulti"><a class="header" href="#recvmulti">RecvMulti</a></h1>
-<p>RecvMulti abstracts the underlying [io_uring::opcode::RecvMulti](https://docs.rs/io-uring/latest/io_uring/opcode/struct.Recv
-Multi.html).</p>
-<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
-<h2 id="construct-4"><a class="header" href="#construct-4">Construct</a></h2>
-<p>RecvMulti requires both a registered filehandle and previously registered / kernel-mapped buffer/s with the referred group.</p>
-<h2 id="submission-5"><a class="header" href="#submission-5">Submission</a></h2>
-<p>Use <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_recv_multi">UringBearer::add_recv_multi</a> to submit a RecvMulti to kernel.</p>
-<h2 id="completion-5"><a class="header" href="#completion-5">Completion</a></h2>
-<p>RecvMulti(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/struct.RecvMultiRec.html">RecvMultiRec</a>) is provided normally through the handler API via UringBearer.</p>
-<p>See <a href="io_uring/opcode/../buffers.html">Buffers</a> on how to deal with individual "selected buffers" within registered "grouped" Buffers.</p>
-<h2 id="lifetime-manual-handling-5"><a class="header" href="#lifetime-manual-handling-5">Lifetime (Manual handling)</a></h2>
-<p>It would be undefined behaviour if the submission record is invalidated before the Multi-shot submission is either confirmed cancelled or timed out.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="sendzc"><a class="header" href="#sendzc">SendZc</a></h1>
-<p>SendZc abstracts the underlying <a href="https://docs.rs/io-uring/latest/io_uring/opcode/struct.SendZc.html">io_uring::opcode::SendZc</a>.</p>
-<p><strong>Note</strong>: This is being migrated to implement the OpCode + OpCompletion traits similar to EpollCtl.</p>
-<h2 id="construct-5"><a class="header" href="#construct-5">Construct</a></h2>
-<p>Currently SendZc requires the associated indexing (through submission) into:</p>
-<ul>
-<li>registered filehandle (see <a href="io_uring/opcode/../filehandles.html">Filehandles</a></li>
-<li>registered buffer (see <a href="io_uring/opcode/../buffers.html">Buffers</a></li>
-<li>kernel buffer id (see <a href="io_uring/opcode/../buffers.html">Buffers</a></li>
-</ul>
-<h2 id="submission-6"><a class="header" href="#submission-6">Submission</a></h2>
-<p>Currently submit using <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.add_send_singlebuf">UringBearer::add_send_singlebuf</a>.</p>
-<h2 id="completion-6"><a class="header" href="#completion-6">Completion</a></h2>
-<p>SendZc(<a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/slab/enum.SendZcRec.html">SendZcRec</a>) is provided normally through the handler API via UringBearer.</p>
-<h2 id="lifetime-manual-handling-6"><a class="header" href="#lifetime-manual-handling-6">Lifetime (Manual handling)</a></h2>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="extensions"><a class="header" href="#extensions">Extensions</a></h1>
-<p>Every OpCode should add:</p>
-<ul>
-<li>It's own separate crate (e.g. <a href="https://docs.rs/io-uring-epoll">io-uring-epoll</a>) and it's own type (e.g. <a href="https://docs.rs/io-uring-epoll/0.2.0-pre1/io_uring_epoll/struct.EpollCtl.html">EpollCtl</a>).</li>
-<li>Impl <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpCode.html">OpCode</a> and <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpCompletion.html">OpCompletion</a> from the <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/">io-uring-opcode</a> crate.</li>
-<li>Feature-gated "extension" trait within <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/">io-uring-opcode</a> similar to <a href="https://docs.rs/io-uring-opcode/latest/io_uring_opcode/trait.OpExtEpollCtl.html">OpExtEpollCtl</a>.</li>
-<li>Feature-gated <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html">UringBearer::Completion</a> variant, e.g. <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/enum.Completion.html#variant.EpollCtl">Completion::EpollCtl</a> within UringBearer.</li>
-<li>Explicit API to push the OpCode as submission, e.g. <a href="https://docs.rs/io-uring-bearer/latest/io_uring_bearer/struct.UringBearer.html#method.push_epoll_ctl">UringBearer::push_epoll_ctl</a></li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="ownership-1"><a class="header" href="#ownership-1">Ownership</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="filehandles-1"><a class="header" href="#filehandles-1">Filehandles</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="buffers-1"><a class="header" href="#buffers-1">Buffers</a></h1>
+<p>Example applications are used in testing to ensure the expected behaviour of any given app is followed.</p>
 
                     </main>
 

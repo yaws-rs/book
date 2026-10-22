@@ -10,7 +10,7 @@ Unstable versions prior to the stable major 1 are to be supported through -2 min
 
 ## Reporting
 
-Please contribute security related issues by e-mail to security@TBD prior to any disclosure.
+Please contribute security related issues by [TBD] prior to any disclosure.
 
 We ask that contributors give us maintainers a reasonable time to address any issues.
 
@@ -23,4 +23,3 @@ Nonetheless initially private contribution would be most welcome and helpful pri
 ## Disclosure
 
 We will publish and credit contributors relating to all the security issues through RustSec which feeds into various security databases independently.
-

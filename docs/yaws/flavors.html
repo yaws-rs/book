@@ -153,23 +153,30 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="flavors"><a class="header" href="#flavors">Flavors</a></h1>
-<p>yaws reference runtime implementations are called flavors.</p>
-<p>yaws provides initially the reference runtimes or flavors for:</p>
+<p>YAWS calls it's environment / runtime integrations as flavors.</p>
+<p>Given the aim of YAWS is to make it easier and have harmonious capability where only the runtime and I/O changes.</p>
+<p>We provide them as examples given YAWS is aimed for multitude of uses in diverse varying environments with different needs.</p>
+<h2 id="yaoi"><a class="header" href="#yaoi">YAOI</a></h2>
+<p>YAOI or <em>Y</em>et <em>A</em>nother <em>O</em>utput and <em>I</em>nput is provided as an Linux io_uring example.</p>
+<p>See full <a href="https://github.com/yaws-rs/yaoi/tree/main/examples/blueprint-tls-http">YAOI HTTPS example here</a>.</p>
+<p>More information about YAOI:</p>
 <ul>
-<li>Lunatic Rust+Erlang+WebAssembly Guest-side</li>
-<li>io_uring Linux io_uring Completion Host-side</li>
+<li><a href="https://github.com/yaws-rs/yaoi">GitHub</a></li>
+<li><a href="https://docs.rs/yaoi/latest/yaoi/">docs.rs</a></li>
 </ul>
-<h1 id="binary-runtime"><a class="header" href="#binary-runtime">Binary Runtime</a></h1>
-<p>User can run any of the flavors directly as binary through <code>cfg(yaws_flavor)</code>.</p>
-<p>This cfg can be either supplied through <code>.cargo/config.toml</code> or through <code>--cfg</code> via the top-level binary.</p>
-<h2 id="io_uring-binary"><a class="header" href="#io_uring-binary">io_uring Binary</a></h2>
-<pre><code>$ RUSTFLAGS="--cfg yaws_flavor=\"io_uring\"" cargo run --bin yaws
-</code></pre>
-<h2 id="lunatic-binary"><a class="header" href="#lunatic-binary">Lunatic Binary</a></h2>
-<pre><code>$ RUSTFLAGS="--cfg yaws_flavor=\"lunatic\"" cargo run --bin yaws --target wasm32-wasi
-</code></pre>
-<h1 id="library-driver"><a class="header" href="#library-driver">Library Driver</a></h1>
-<p>User can implement the I/O traits in conjuction with the abstract machines implementing HTTP.</p>
+<h2 id="embassy"><a class="header" href="#embassy">Embassy</a></h2>
+<p>See full <a href="https://github.com/yaws-rs/embassy">Embassy HTTPS example here</a>.</p>
+<p>More information about Embassy:</p>
+<ul>
+<li><a href="https://embassy.dev/">Website</a></li>
+<li><a href="https://github.com/embassy-rs/">GitHub</a></li>
+<li><a href="https://docs.embassy.dev/">Docs</a></li>
+</ul>
+<h2 id="more"><a class="header" href="#more">More</a></h2>
+<p>If you would look forward to more runtime integrations or know one we haven't listed here.</p>
+<p>Raise an issue at <a href="https://github.com/yaws-rs/yaws">yaws/yaws repository</a> about it.</p>
+<h2 id="library-driver"><a class="header" href="#library-driver">Library Driver</a></h2>
+<p>User can also implement the I/O traits in conjuction with the abstract machines implementing HTTP.</p>
 <p>Refer to the API documentation or see the existing reference runtimes or flavors for examples.</p>
 
                     </main>

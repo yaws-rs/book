@@ -153,14 +153,8 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="tls"><a class="header" href="#tls">TLS</a></h1>
-<p>Source: <a href="https://github.com/yaws-rs/tls/tree/main/blueprint">yaws-rs/tls/blueprint</a>.</p>
+<p>Source: <a href="https://github.com/yaws-rs/tls">yaws-rs/tls</a>.</p>
 <p>User typically provides the TLS Layer configuration through it's context within the provided blueprints to the runtime driver.</p>
-<pre><code class="language-no_run">let tls_config_server =
-        TlsServerConfig::with_certs_and_key_file(Path::new(CA), Path::new(CERT), Path::new(KEY))
-            .unwrap();
-    let server_context =
-        blueprint_tls::TlsContext::Server(TlsServer::with_config(tls_config_server).unwrap());
-</code></pre>
 <p>The <strong>Left</strong> side of the state machine is used as the Ciphertext and <strong>Right</strong> side is the Cleartext side.</p>
 <p>The TLS state machine both handles the necessarily handshake and negotiation in the middle and then either encrypts the traffic from <strong>Right-to-Left</strong> or decrypts from <strong>Left-to-Right</strong>.</p>
 

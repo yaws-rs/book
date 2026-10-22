@@ -154,8 +154,7 @@
                     <main>
                         <h1 id="yaws-orbit"><a class="header" href="#yaws-orbit">Yaws Orbit</a></h1>
 <p>Yaws Orbits are the instantiated state machines from set of blueprints typically run as "pipelines" with the given set of external I/O.</p>
-<p>All Orbits are advanced using [Left] and [Right] traits.</p>
-<p>See example Orbit implementation <a href="https://github.com/yaws-rs/tls/blob/main/blueprint/src/tls_blueprints.rs#L20">advancing the TLS state machine</a> which advances either the client or server TLS contextes.</p>
+<p>All Orbits are advanced using <a href="./traits/left.html">Left</a> and <a href="./traits/right.html">Right</a> traits.</p>
 <p>Within each blueprint composition there must be at least one App layer with the intermediate Layers being optional.</p>
 <p>Within the runtime, each runtime makes the decision/s on how to process all the intermediate layers as well as the terminating layers given each runtime is expected to have it's unique I/O characteristics.</p>
 <p>Typically all the runtimes first processes the raw I/O all the way from Left to Right (as input) and then secondly provides the final summary (or reduced output) from all the chained state machines through back into the I/O layer, essentially advancing first from Left to Right for input and then from Right to Left for the final output.</p>

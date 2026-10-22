@@ -5,5 +5,4 @@ yaws Performance testing consists of the below:
 - min+avg+max latency
 - Protocol I/O less performance
 - HTTP-TLS
-
-
+- App based performance

@@ -153,11 +153,11 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="http11"><a class="header" href="#http11">HTTP/1.1</a></h1>
-<p>Source: <a href="https://github.com/yaws-rs/h11spec/tree/main/blueprint">github/yaws-rs/h11spec/blueprint</a></p>
+<p>Source: <a href="https://github.com/yaws-rs/h11spec">yaws-rs/h11spec</a></p>
 <p>Currently the HTTP/1.1 is an "App Layer" provided as the terminating layer.</p>
-<p>The HTTP state machine only takes the <strong>Left</strong> side and does not provide any transformation at the moment.</p>
+<p>The HTTP state machine only takes the <strong>Left</strong> side and does not provide any transformation into the <strong>Right</strong> at the moment.</p>
 <p>In the future the HTTP state machine will provide transformation where the <strong>Right</strong> side can implement application functionality over HTTP.</p>
-<p>The HTTP state machine is designed to minimally parse the metadata for the sole processing of HTTP layer and will then pass the rest to the application on top.</p>
+<p>The application on top injected through the HTTP/1.1 state machine provides the instrumentation on how to respond to every request.</p>
 
                     </main>
 
@@ -167,7 +167,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../io_uring/introduction.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../app.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -181,7 +181,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../io_uring/introduction.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../app.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

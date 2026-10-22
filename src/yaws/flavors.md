@@ -1,31 +1,38 @@
 # Flavors
 
-yaws reference runtime implementations are called flavors.
+YAWS calls it's environment / runtime integrations as flavors.
 
-yaws provides initially the reference runtimes or flavors for:
-* Lunatic Rust+Erlang+WebAssembly Guest-side
-* io_uring Linux io_uring Completion Host-side
+Given the aim of YAWS is to make it easier and have harmonious capability where only the runtime and I/O changes.
 
-# Binary Runtime
+We provide them as examples given YAWS is aimed for multitude of uses in diverse varying environments with different needs.
 
-User can run any of the flavors directly as binary through `cfg(yaws_flavor)`.
+## YAOI
 
-This cfg can be either supplied through `.cargo/config.toml` or through `--cfg` via the top-level binary.
+YAOI or *Y*et *A*nother *O*utput and *I*nput is provided as an Linux io_uring example.
 
-## io_uring Binary
+See full [YAOI HTTPS example here](https://github.com/yaws-rs/yaoi/tree/main/examples/blueprint-tls-http).
 
-```
-$ RUSTFLAGS="--cfg yaws_flavor=\"io_uring\"" cargo run --bin yaws
-```
+More information about YAOI:
+- [GitHub](https://github.com/yaws-rs/yaoi)
+- [docs.rs](https://docs.rs/yaoi/latest/yaoi/)
 
-## Lunatic Binary
+## Embassy
 
-```
-$ RUSTFLAGS="--cfg yaws_flavor=\"lunatic\"" cargo run --bin yaws --target wasm32-wasi
-```
+See full [Embassy HTTPS example here](https://github.com/yaws-rs/embassy).
 
-# Library Driver
+More information about Embassy:
+- [Website](https://embassy.dev/)
+- [GitHub](https://github.com/embassy-rs/)
+- [Docs](https://docs.embassy.dev/)
 
-User can implement the I/O traits in conjuction with the abstract machines implementing HTTP.
+## More
+
+If you would look forward to more runtime integrations or know one we haven't listed here.
+
+Raise an issue at [yaws/yaws repository](https://github.com/yaws-rs/yaws) about it.
+
+## Library Driver
+
+User can also implement the I/O traits in conjuction with the abstract machines implementing HTTP.
 
 Refer to the API documentation or see the existing reference runtimes or flavors for examples.

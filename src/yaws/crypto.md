@@ -1,7 +1,7 @@
 # Cryptography
 
-yaws HTTP-TLS uses rustls >0.23 behind the scenes.
+yaws TLS uses either rustls >0.23 or yTLS behind the scenes.
 
-It can be configured to various providers implementing CryptoProvider.
+Typically rustls would be used in most cases but in no_std + no_alloc you can use yTLS.
 
-Downstream user does not need to be concerned of the TLS implementation detail.
+See more at [yaws/tls](https://github.com/yaws-rs/tls).
