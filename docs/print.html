@@ -340,6 +340,26 @@ listener
 <p>The HTTP state machine only takes the <strong>Left</strong> side and does not provide any transformation into the <strong>Right</strong> at the moment.</p>
 <p>In the future the HTTP state machine will provide transformation where the <strong>Right</strong> side can implement application functionality over HTTP.</p>
 <p>The application on top injected through the HTTP/1.1 state machine provides the instrumentation on how to respond to every request.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="http2"><a class="header" href="#http2">HTTP/2</a></h1>
+<p>Source: <a href="https://github.com/yaws-rs/h2spec">yaws-rs/h2spec</a></p>
+<p>YAWS HTTP/2 also serves as the "Terminating" layer embedding an Application layer into itself.</p>
+<p>The application layer implements the contract for:</p>
+<ul>
+<li><a href="https://docs.rs/blueprint-h2spec/latest/blueprint_h2spec/trait.H2FrameReceiver.html">H2FrameReceiver</a> to receive H2 frames.</li>
+<li><a href="https://docs.rs/blueprint-h2spec/latest/blueprint_h2spec/trait.H2FrameSender.html">H2FrameSender</a> to provide H2 frames for sending out.</li>
+</ul>
+<p>The application layer gives the implementor full control of the stateful framing of H2 context.</p>
+<h2 id="http11-translation"><a class="header" href="#http11-translation">HTTP/1.1 Translation</a></h2>
+<p>It is convenient to be able to use the same <a href="protocols//app.html">application layer</a> as HTTP/1.1 for HTTP/2 use.</p>
+<p>For this You can use an YAWS H2 Application to transform all the requests into YAWS HTTP/1.1 Request &amp; Response pairs:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Rick Roll is a HTTP/1.1 App but we wrap it into H2Serving
+fn init_orbit() -&gt; H2Serving&lt;MyH2App&lt;RickRoll&gt;&gt; {
+    H2SpecServer::with_defaults().unwrap()
+}
+<span class="boring">}</span></code></pre></pre>
+<p>See the full example at <a href="https://github.com/yaws-rs/h2spec/tree/main/examples/basic-h2-cleartext">yaws-rs/h2spec/basic-h2-cleartext</a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="application"><a class="header" href="#application">Application</a></h1>
 <p>Application layer is injected on top of the terminating protocol layer.</p>
 <p>Currently we have application layer implementations over H11spec (HTTP/1.1)</p>

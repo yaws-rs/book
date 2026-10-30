@@ -23,6 +23,7 @@
 - [Overview](./protocols/overview.md)
 - [TLS](./protocols/tls.md)
 - [HTTP/1.1](./protocols/h11spec.md)
+- [HTTP/2](./protocols/h2spec.md)
 
 # Application Layer
 
